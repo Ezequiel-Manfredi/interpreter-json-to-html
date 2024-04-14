@@ -1,0 +1,1 @@
+## directorio bin. Archivos binarios listos para ser ejecutados. (lexer y scanner)

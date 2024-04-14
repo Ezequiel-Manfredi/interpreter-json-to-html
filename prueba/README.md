@@ -1,0 +1,1 @@
+# directorio prueba. Archivos de ejemplo de pseudocódigo con extensión ".json"
