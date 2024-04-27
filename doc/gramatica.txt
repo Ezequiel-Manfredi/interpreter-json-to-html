@@ -1,0 +1,137 @@
+Gramatica JSON: G(N,T,P,Σ)
+
+** las lineas que empiezan con // son comentarios para explicar la producciones de abajo **
+
+N: {
+  CONTENIDO ; EMPRESAS ; VERSION ; FIRMA ; LISTA_EMPRESAS ; EMPRESA ;
+  NOMBRE_EMPRESA ; FUNDACION ; DIRECCION ; INGRESOS_ANUALES ; PYME ; LINK ;
+  DEPARTAMENTOS ; ATRIBUTOS_DIRECCION ; LISTA_DEPARTAMENTOS ; CALLE ; CIUDAD ;
+  PAIS ; DEPARTAMENTO ; NOMBRE ; JEFE ; SUBDEPARTAMENTOS ; LISTA_SUBDEPARTAMENTOS ;
+  SUBDEPARTAMENTO ; EMPLEADOS ; LISTA_EMPLEADOS ; EMPLEADO ; EDAD ; CARGO ; SALARIO ;
+  ACTIVO ; FECHA_CONTRATACION ; PROYECTOS ; LISTA_PROYECTOS ; PROYECTO ; ESTADO ;
+  FECHA_INICIO ; FECHA_FIN
+}
+
+T: {
+  { ; } ; , ; [ ; ] ; " ;   ; : ; string ; integer ; bool ;
+  float ; date ; null ; version ; firma_digital ; empresas ;
+  nombre_empresa ; fundacion ; direccion ; ingresos_anuales ; pyme ; link ;
+  departamentos ; calle ; ciudad ; pais ; nombre ; jefe ; subdepartamentos ;
+  empleados ; edad ; cargo ; salario ; activo ; fecha_contratacion ; proyectos ;
+  estado ; fecha_inicio ; fecha_fin ;
+}
+
+P: {
+
+Σ -> {CONTENIDO}
+
+// combinatoria del orden de los campos considerando los campos opcionales VERSION y FIRMA
+CONTENIDO -> EMPRESAS,VERSION,FIRMA | EMPRESAS,FIRMA,VERSION
+CONTENIDO -> VERSION,FIRMA,EMPRESAS | VERSION,EMPRESAS,FIRMA
+CONTENIDO -> FIRMA,EMPRESAS,VERSION | FIRMA,VERSION,EMPRESAS
+CONTENIDO -> EMPRESAS,VERSION | EMPRESAS,FIRMA
+CONTENIDO -> VERSION,EMPRESAS | FIRMA,EMPRESAS
+CONTENIDO -> EMPRESAS
+
+VERSION -> "version": null
+VERSION -> "version": string
+FIRMA -> "firma_digital": null
+FIRMA -> "firma_digital": string
+EMPRESAS -> "empresas": [LISTA_EMPRESAS]
+
+// recursion de empresas
+LISTA_EMPRESAS -> {EMPRESA},LISTA_EMPRESAS
+LISTA_EMPRESAS -> {EMPRESA}
+
+// manteniendo el orden de los campos considerando los campos opcionales DIRECCION y LINK
+EMPRESA -> NOMBRE_EMPRESA,FUNDACION,DIRECCION,INGRESOS_ANUALES,PYME,LINK,DEPARTAMENTOS
+EMPRESA -> NOMBRE_EMPRESA,FUNDACION,INGRESOS_ANUALES,PYME,LINK,DEPARTAMENTOS
+EMPRESA -> NOMBRE_EMPRESA,FUNDACION,DIRECCION,INGRESOS_ANUALES,PYME,DEPARTAMENTOS
+EMPRESA -> NOMBRE_EMPRESA,FUNDACION,INGRESOS_ANUALES,PYME,DEPARTAMENTOS
+
+NOMBRE_EMPRESA -> "nombre_empresa": string
+FUNDACION -> "fundacion": integer
+DIRECCION -> "direccion": null
+DIRECCION -> "direccion": {}
+DIRECCION -> "direccion": {ATRIBUTOS_DIRECCION}
+INGRESOS_ANUALES -> "ingresos_anuales": float
+PYME -> "pyme": bool
+LINK -> "link": null
+LINK -> "link": string
+DEPARTAMENTOS -> "departamentos": [LISTA_DEPARTAMENTOS]
+
+// combinatoria del orden de los campos
+ATRIBUTOS_DIRECCION -> CALLE,CIUDAD,PAIS | CALLE,PAIS,CIUDAD
+ATRIBUTOS_DIRECCION -> CIUDAD,CALLE,PAIS | CIUDAD,PAIS,CALLE
+ATRIBUTOS_DIRECCION -> PAIS,CALLE,CIUDAD | PAIS,CIUDAD,CALLE
+
+CALLE -> "calle": string
+CIUDAD -> "ciudad": string
+PAIS -> "pais": string
+
+// recursion de departamentos
+LISTA_DEPARTAMENTOS -> {DEPARTAMENTO},LISTA_DEPARTAMENTOS
+LISTA_DEPARTAMENTOS -> {DEPARTAMENTO}
+
+// combinatoria del orden de los campos considerando el campo opcional JEFE
+DEPARTAMENTO -> NOMBRE,JEFE,SUBDEPARTAMENTOS | NOMBRE,SUBDEPARTAMENTOS,JEFE
+DEPARTAMENTO -> JEFE,NOMBRE,SUBDEPARTAMENTOS | JEFE,SUBDEPARTAMENTOS,NOMBRE
+DEPARTAMENTO -> SUBDEPARTAMENTOS,NOMBRE,JEFE | SUBDEPARTAMENTOS,JEFE,NOMBRE
+DEPARTAMENTO -> NOMBRE,SUBDEPARTAMENTOS | SUBDEPARTAMENTOS,NOMBRE
+
+NOMBRE -> "nombre": string
+JEFE -> "jefe": null
+JEFE -> "jefe": string
+SUBDEPARTAMENTOS -> "subdepartamentos": [LISTA_SUBDEPARTAMENTOS]
+
+// recursion de subdepartamentos
+LISTA_SUBDEPARTAMENTOS -> {SUBDEPARTAMENTO},LISTA_SUBDEPARTAMENTOS
+LISTA_SUBDEPARTAMENTOS -> {SUBDEPARTAMENTO}
+
+// combinatoria del orden de los campos considerando los campos opcionales JEFE y EMPLEADOS
+SUBDEPARTAMENTO -> NOMBRE,JEFE,EMPLEADOS | NOMBRE,EMPLEADOS,JEFE
+SUBDEPARTAMENTO -> JEFE,NOMBRE,EMPLEADOS | JEFE,EMPLEADOS,NOMBRE
+SUBDEPARTAMENTO -> EMPLEADOS,NOMBRE,JEFE | EMPLEADOS,JEFE,NOMBRE
+SUBDEPARTAMENTO -> NOMBRE,EMPLEADOS | EMPLEADOS,NOMBRE
+SUBDEPARTAMENTO -> NOMBRE,JEFE | JEFE,NOMBRE
+SUBDEPARTAMENTO -> NOMBRE
+
+EMPLEADOS -> "empleados": null
+EMPLEADOS -> "empleados": []
+EMPLEADOS -> "empleados": [LISTA_EMPLEADOS]
+
+// recursion de empleados
+LISTA_EMPLEADOS -> {EMPLEADO},LISTA_EMPLEADOS
+LISTA_EMPLEADOS -> {EMPLEADO}
+
+// manteniendo el orden de los campos considerando los campos opcionales EDAD y PROYECTOS
+EMPLEADO -> NOMBRE,EDAD,CARGO,SALARIO,ACTIVO,FECHA_CONTRATACION,PROYECTOS
+EMPLEADO -> NOMBRE,EDAD,CARGO,SALARIO,ACTIVO,FECHA_CONTRATACION
+EMPLEADO -> NOMBRE,CARGO,SALARIO,ACTIVO,FECHA_CONTRATACION,PROYECTOS
+
+EDAD -> "edad": null
+EDAD -> "edad": integer
+CARGO -> "cargo": string
+SALARIO -> "salario": float
+ACTIVO -> "activo": bool
+FECHA_CONTRATACION -> "fecha_contratacion": date
+PROYECTOS -> "proyectos": null
+PROYECTOS -> "proyectos": []
+PROYECTOS -> "proyectos": [LISTA_PROYECTOS]
+
+// recursion de proyectos
+LISTA_PROYECTOS -> {PROYECTO},LISTA_PROYECTOS
+LISTA_PROYECTOS -> {PROYECTO}
+
+// manteniendo el orden de los campos considerando los campos opcionales ESTADO y FECHA_FIN
+PROYECTO -> NOMBRE,ESTADO,FECHA_INICIO,FECHA_FIN
+PROYECTO -> NOMBRE,ESTADO,FECHA_INICIO
+PROYECTO -> NOMBRE,FECHA_INICIO,FECHA_FIN
+
+ESTADO -> "estado": null
+ESTADO -> "estado": string
+FECHA_INICIO -> "fecha_inicio": date
+FECHA_FIN -> "fecha_fin": null
+FECHA_FIN -> "fecha_fin": date
+
+}
