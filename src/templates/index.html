@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/static/components/FileView.js"></script>
+  <script defer src="/static/main.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+  <title>Interpreter JSON to HTML</title>
+</head>
+
+<body>
+  <form id="form-file">
+    <label id="drop-zone">
+      <p>Arrastre sus archivos JSON hacia acá o click para seleccionarlos</p>
+      <input hidden type="file" name="json" id="files" multiple accept=".json">
+    </label>
+  </form>
+  <main>
+    <section id="input">
+      <nav class="input-nav nav"></nav>
+      <section class="input-content"></section>
+    </section>
+    <button id="submit">➡️</button>
+    <section id="output">
+      <nav class="output-nav nav"></nav>
+      <section class="output-content"></section>
+    </section>
+    <button id="download">⬇️</button>
+  </main>
+  <form id="console">
+    <ul id="history"></ul>
+    <input placeholder="lexer json interactivo" type="text" autocomplete="off" autofocus name="string-to-scan">
+  </form>
+</body>
+
+</html>
