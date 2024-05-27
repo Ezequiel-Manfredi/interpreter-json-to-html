@@ -29,8 +29,6 @@ $files.addEventListener("change", function () {
 // TODO: interaccion con la API
 $submit.addEventListener("click", (e) => {
     console.log("fetch a la api :)")
-
-    e.target.setAtributte("disabled")
     $download.classList.add("active")
 })
 $download.addEventListener("click", (e) => {
@@ -46,7 +44,7 @@ $console.addEventListener("submit", async (e) => {
     let stringInput = document.createElement("p")
     let formData = new FormData(e.target)
     let stringToScan = formData.get("string-to-scan")
-    stringInput.innerHTML = ">>>" + stringToScan
+    stringInput.innerHTML = "<b>>>> </b>" + stringToScan
 
     let stringOutput = document.createElement("p")
     await fetch('/lexer', {
@@ -56,7 +54,7 @@ $console.addEventListener("submit", async (e) => {
     })
         .then(res => res.json())
         .then(data => data.forEach(
-            tok => stringOutput.innerHTML += `${tok.value} -> ${tok.type} <br/>`)
+            tok => stringOutput.innerHTML += `${tok.value} ➜ ${tok.type} <br/>`)
         )
 
     newHistory.append(stringInput)
