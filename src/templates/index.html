@@ -14,7 +14,8 @@
 <body>
   <form id="form-file">
     <label id="drop-zone">
-      <p>Arrastre sus archivos JSON hacia acá o click para seleccionarlos</p>
+      <img src="/static/img/uploadFile.svg">
+      <p>Arrastre sus archivos JSON aquí o click para seleccionarlos</p>
       <input hidden type="file" name="json" id="files" multiple accept=".json">
     </label>
   </form>
@@ -23,16 +24,16 @@
       <nav class="input-nav nav"></nav>
       <section class="input-content"></section>
     </section>
-    <button id="submit">➡️</button>
+    <button id="submit">Enviar</button>
     <section id="output">
       <nav class="output-nav nav"></nav>
       <section class="output-content"></section>
     </section>
-    <button id="download">⬇️</button>
+    <button id="download">Descargar</button>
   </main>
   <form id="console">
     <ul id="history"></ul>
-    <input placeholder="lexer json interactivo" type="text" autocomplete="off" autofocus name="string-to-scan">
+    <input placeholder="Lexer de json interactivo" type="text" autocomplete="off" autofocus name="string-to-scan">
   </form>
 </body>
 
