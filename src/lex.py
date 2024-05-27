@@ -100,3 +100,12 @@ def lexer_module(data):
       'lexpos': tok.lexpos
     })
   return tokens_response
+
+if __name__ == '__main__':
+  print('Lexer de json interactivo')
+  while True:
+    string_input = input('>>>')
+    tokens = lexer_module(string_input)
+    for token in tokens :
+      print(f"{token.get('value')} -> {token.get('type')}")
+    print()
