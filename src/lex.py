@@ -1,83 +1,83 @@
 import ply.lex as lex
 
 reserved = {
-  '"empresas"' : 'KEY_EMPRESAS',
-  '"version"' : 'KEY_VERSION',
-  '"firma_digital"' : 'KEY_FIRMA_DIGITAL',
-  '"nombre_empresa"' : 'KEY_NOMBRE_EMPRESA',
-  '"fundacion"' : 'KEY_FUNDACION',
-  '"direccion"' : 'KEY_DIRECCION',
-  '"calle"' : 'KEY_CALLE',
-  '"ciudad"' : 'KEY_CIUDAD',
-  '"pais"' : 'KEY_PAIS',
-  '"ingresos_anuales"' : 'KEY_INGRESOS_ANUALES',
-  '"pyme"' : 'KEY_PYME',
-  '"link"' : 'KEY_LINK',
-  '"departamentos"' : 'KEY_DEPARTAMENTOS',
-  '"nombre"' : 'KEY_NOMBRE',
-  '"jefe"' : 'KEY_JEFE',
-  '"subdepartamentos"' : 'KEY_SUBDEPARTAMENTOS',
-  '"empleados"' : 'KEY_EMPLEADOS',
-  '"edad"' : 'KEY_EDAD',
-  '"cargo"' : 'KEY_CARGO',
-  '"salario"' : 'KEY_SALARIO',
-  '"activo"' : 'KEY_ACTIVO',
-  '"fecha_contratacion"' : 'KEY_FECHA_CONTRATACION',
-  '"proyectos"' : 'KEY_PROYECTOS',
-  '"estado"' : 'KEY_ESTADO',
-  '"fecha_inicio"' : 'KEY_FECHA_INICIO',
-  '"fecha_fin"' : 'KEY_FECHA_FIN',
+  '"empresas"' : 'CLAVE_EMPRESAS',
+  '"version"' : 'CLAVE_VERSION',
+  '"firma_digital"' : 'CLAVE_FIRMA_DIGITAL',
+  '"nombre_empresa"' : 'CLAVE_NOMBRE_EMPRESA',
+  '"fundacion"' : 'CLAVE_FUNDACION',
+  '"direccion"' : 'CLAVE_DIRECCION',
+  '"calle"' : 'CLAVE_CALLE',
+  '"ciudad"' : 'CLAVE_CIUDAD',
+  '"pais"' : 'CLAVE_PAIS',
+  '"ingresos_anuales"' : 'CLAVE_INGRESOS_ANUALES',
+  '"pyme"' : 'CLAVE_PYME',
+  '"link"' : 'CLAVE_LINK',
+  '"departamentos"' : 'CLAVE_DEPARTAMENTOS',
+  '"nombre"' : 'CLAVE_NOMBRE',
+  '"jefe"' : 'CLAVE_JEFE',
+  '"subdepartamentos"' : 'CLAVE_SUBDEPARTAMENTOS',
+  '"empleados"' : 'CLAVE_EMPLEADOS',
+  '"edad"' : 'CLAVE_EDAD',
+  '"cargo"' : 'CLAVE_CARGO',
+  '"salario"' : 'CLAVE_SALARIO',
+  '"activo"' : 'CLAVE_ACTIVO',
+  '"fecha_contratacion"' : 'CLAVE_FECHA_CONTRATACION',
+  '"proyectos"' : 'CLAVE_PROYECTOS',
+  '"estado"' : 'CLAVE_ESTADO',
+  '"fecha_inicio"' : 'CLAVE_FECHA_INICIO',
+  '"fecha_fin"' : 'CLAVE_FECHA_FIN',
 }
 
 tokens = [
   'NO_TOKEN',
-  'OPEN_OBJECT',
-  'CLOSE_OBJECT',
-  'OPEN_LIST',
-  'CLOSE_LIST',
-  'COLON',
-  'COMMA',
-  'VALUE_NULL',
-  'VALUE_BOOL',
-  'VALUE_STRING',
-  'VALUE_DATE',
-  'VALUE_URL',
-  'VALUE_INTEGER',
-  'VALUE_FLOAT'
+  'APERTURA_OBJETO',
+  'CLAUSURA_OBJETO',
+  'APERTURA_LISTA',
+  'CLAUSURA_LISTA',
+  'DOS_PUNTOS',
+  'COMA',
+  'VALOR_NULL',
+  'VALOR_BOOL',
+  'VALOR_STRING',
+  'VALOR_FECHA',
+  'VALOR_URL',
+  'VALOR_ENTERO',
+  'VALOR_REAL'
 ] + list(reserved.values())
 
-t_OPEN_OBJECT = r'\{'
-t_CLOSE_OBJECT = r'\}'
-t_OPEN_LIST = r'\['
-t_CLOSE_LIST = r'\]'
-t_COLON = r'\:'
-t_COMMA = r'\,'
-t_VALUE_NULL = r'(null)'
-t_VALUE_BOOL = r'(true)|(false)'
-t_VALUE_STRING = r'\"(\w+\s*)*\"'
-t_VALUE_DATE = r'\"\d{1,2}\/\d{1,2}\/\d{4}\"'
-t_VALUE_URL = r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/.*)?)\"'
+t_APERTURA_OBJETO = r'\{'
+t_CLAUSURA_OBJETO = r'\}'
+t_APERTURA_LISTA = r'\['
+t_CLAUSURA_LISTA = r'\]'
+t_DOS_PUNTOS = r'\:'
+t_COMA = r'\,'
+t_VALOR_NULL = r'(null)'
+t_VALOR_BOOL = r'(true)|(false)'
+t_VALOR_STRING = r'\"(\w+\s*)*\"'
+t_VALOR_FECHA = r'\"\d{4}\-\d{1,2}\-\d{1,2}\"'
+t_VALOR_URL = r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/.*)?)\"'
 
-def t_VALUE_FLOAT(t):
+def t_VALOR_REAL(t):
   r'(\d+\.\d+)'
   t.value = float(t.value)
   return t
 
-def t_VALUE_INTEGER(t):
+def t_VALOR_ENTERO(t):
   r'\d+'
   t.value = int(t.value)
   return t
 
-def t_KEY(t):
+def t_CLAVE(t):
     r'(\"\w+\")'
-    t.type = reserved.get(t.value,'VALUE_STRING') # Check for reserved words
+    t.type = reserved.get(t.value,'VALOR_STRING') # Check for reserved words
     return t
 
 def t_new_line(t):
   r'\n+'
   t.lexer.lineno += len(t.value)
   
-t_ignore  = ' \t\r'
+t_ignore  = ' \t'
 
 def t_error(t):
   t.lexer.skip(len(t.value))
