@@ -47,10 +47,11 @@ $console.addEventListener("submit", async (e) => {
     e.target.reset()
 })
 
-// manejo de los archivos
+// verificar extension de archivos
 const checkFiles = (fileList) => {
     let files = [...fileList]
-    if (!files.every(f => f.type === "application/json")) {
+    let isJson = files.every(f => f.type === "application/json")
+    if (!isJson) {
         $dropZone.classList.add("shake")
         $dropZone.querySelector("p").innerHTML = "Solo se aceptan archivos .json"
         setTimeout(() => $dropZone.classList.remove("shake"), 800)
@@ -61,6 +62,7 @@ const checkFiles = (fileList) => {
     }
 }
 
+// obtener contenido de archivos y renderizado
 const handlerFiles = async (files) => {
     let filesPr = files.map(file => new Promise((res, rej) => {
         let reader = new FileReader()
