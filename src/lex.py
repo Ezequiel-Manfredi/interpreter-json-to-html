@@ -98,7 +98,14 @@ def lexer_module(data):
   }
   while True:
     tok = lexer.token()
-    if not tok: 
+    if not tok:
+      if is_no_token:
+        tokens_response.append({
+          'type': no_token['type'],
+          'value': no_token['value'],
+          'lineno': no_token['lineno'],
+          'lexpos': no_token['lexpos']
+        }) # Add accumulated no_token
       break      # No more input
     if tok.type == 'NO_TOKEN':
       if not is_no_token: # Initialize new no_token
