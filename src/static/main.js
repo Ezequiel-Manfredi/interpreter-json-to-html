@@ -2,6 +2,7 @@ let $form = document.querySelector("#form-file")
 let $dropZone = document.querySelector("#drop-zone")
 let $files = document.querySelector("#files")
 let $console = document.querySelector("#console");
+let $history = $console.querySelector("#history")
 let $fileInputNav = document.querySelector(".input-nav")
 let $fileInputContent = document.querySelector(".input-content")
 let $submit = document.querySelector("#submit")
@@ -13,6 +14,7 @@ let filesInputResults
 const eventDragAndDrop = ["dragover", "dragenter", "dragleave"]
 const fileInputView = new FileView($fileInputNav, $fileInputContent)
 const fileOutputView = new FileView($fileOutputNav, $fileOutputContent)
+const consoleHistoryView = new HistoryView($history)
 
 // dos maneras de capturar archivos: drag and drop or input
 eventDragAndDrop.forEach(nameEvent => {
@@ -35,34 +37,13 @@ $download.addEventListener("click", (e) => {
     console.log("archivo descargado")
 })
 
-// consola interactiva TODO: interaccion con la API
+// consola interactiva : interaccion con la API
 $console.addEventListener("submit", async (e) => {
     e.preventDefault()
-    let $history = $console.querySelector("#history")
-    let newHistory = document.createElement("li")
-    newHistory.classList.add("item")
-    let stringInput = document.createElement("p")
     let formData = new FormData(e.target)
     let stringToScan = formData.get("string-to-scan")
-    stringInput.innerHTML = "<b>>>> </b>" + stringToScan
 
-    let stringOutput = document.createElement("p")
-    await fetch('/lexer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ string: stringToScan })
-    })
-        .then(res => res.json())
-        .then(data => data.forEach(
-            tok => stringOutput.innerHTML += `${tok.value} ➜ ${tok.type} <br/>`)
-        )
-
-    newHistory.append(stringInput)
-    newHistory.append(stringOutput)
-    $history.appendChild(newHistory)
-
-    $history.scrollTop = $history.scrollHeight
-
+    consoleHistoryView.renderNewHistory(stringToScan)
     e.target.reset()
 })
 
