@@ -80,7 +80,7 @@ def t_new_line(t):
 t_ignore  = ' \t'
 
 def t_error(t):
-  t.lexer.skip(len(t.value))
+  t.lexer.skip(1)
   t.type = "NO_TOKEN"
   return t
   
@@ -89,16 +89,39 @@ lexer = lex.lex()
 def lexer_module(data):
   lexer.input(data)
   tokens_response = []
+  is_no_token = False
+  no_token = {
+    'type': 'NO_TOKEN',
+    'value': '',
+    'lineno': 0,
+    'lexpos': 0
+  }
   while True:
     tok = lexer.token()
     if not tok: 
       break      # No more input
-    tokens_response.append({
-      'type': tok.type,
-      'value': tok.value,
-      'lineno': tok.lineno,
-      'lexpos': tok.lexpos
-    })
+    if tok.type == 'NO_TOKEN':
+      if not is_no_token: # Initialize new no_token
+        is_no_token = True
+        no_token['lineno'] = tok.lineno
+        no_token['lexpos'] = tok.lexpos
+      no_token['value'] += tok.value[0] # Accumulate char no_token
+    else:
+      if is_no_token:
+        is_no_token = False
+        tokens_response.append({
+          'type': no_token['type'],
+          'value': no_token['value'],
+          'lineno': no_token['lineno'],
+          'lexpos': no_token['lexpos']
+        }) # Add accumulated no_token
+        no_token['value'] = ''
+      tokens_response.append({
+        'type': tok.type,
+        'value': tok.value,
+        'lineno': tok.lineno,
+        'lexpos': tok.lexpos
+      }) # Add new token
   return tokens_response
 
 if __name__ == '__main__':
