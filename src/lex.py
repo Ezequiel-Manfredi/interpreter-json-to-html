@@ -127,8 +127,12 @@ def lexer_module(data):
 if __name__ == '__main__':
   print('Lexer de json interactivo')
   while True:
-    string_input = input('>>>')
+    string_input = input('>>> ')
+    print()
     tokens = lexer_module(string_input)
     for token in tokens :
-      print(f"{token.get('value')} -> {token.get('type')}")
+      print(f"{token.get('value')} ➜  ", end="")
+      print(f"tipo: {token.get('type')} ,", end="")
+      print(f"linea: {token.get('lineno')} ,", end="")
+      print(f"posicion: {token.get('lexpos')}")
     print()
