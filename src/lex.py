@@ -1,5 +1,22 @@
 import ply.lex as lex
 
+cargos_estados_1 = {
+  '"Marketing"' : 'VALOR_CARGO',
+  '"Developer"' : 'VALOR_CARGO',
+  '"Devops"' : 'VALOR_CARGO',
+  '"Canceled"' : 'VALOR_ESTADO',
+  '"Done"' : 'VALOR_ESTADO'
+}
+cargos_estados_2 = {
+  '"Product Analyst"' : 'VALOR_CARGO',
+  '"Project Manager"' : 'VALOR_CARGO',
+  '"UX designer"' : 'VALOR_CARGO',
+  '"DB admin"' : 'VALOR_CARGO',
+  '"To do"' : 'VALOR_ESTADO',
+  '"In progress"' : 'VALOR_ESTADO',
+  '"On hold"' : 'VALOR_ESTADO'
+}
+
 reserved = {
   '"empresas"' : 'CLAVE_EMPRESAS',
   '"version"' : 'CLAVE_VERSION',
@@ -43,7 +60,9 @@ tokens = [
   'VALOR_FECHA',
   'VALOR_URL',
   'VALOR_ENTERO',
-  'VALOR_REAL'
+  'VALOR_REAL',
+  'VALOR_CARGO',
+  'VALOR_ESTADO'
 ] + list(reserved.values())
 
 t_APERTURA_OBJETO = r'\{'
@@ -54,24 +73,43 @@ t_DOS_PUNTOS = r'\:'
 t_COMA = r'\,'
 t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
-t_VALOR_STRING = r'\"(\w+\s*)*\"'
-t_VALOR_FECHA = r'\"\d{4}\-\d{1,2}\-\d{1,2}\"'
-t_VALOR_URL = r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/.*)?)\"'
 
 def t_VALOR_REAL(t):
-  r'(\d+\.\d+)'
-  t.value = float(t.value)
+  r'(\d+\.\d{1,2})'
   return t
 
 def t_VALOR_ENTERO(t):
   r'\d+'
-  t.value = int(t.value)
+  return t
+
+def t_VALOR_FECHA(t):
+  r'\"\d{4}\-\d{1,2}\-\d{1,2}\"'
+  p = t.value[1:-1].split('-') # Avoid " and separate the pieces by -
+  if (
+    1900 <= int(p[0]) and
+    int(p[0]) <= 2099 and 
+    1 <= int(p[1]) and
+    int(p[1]) <= 12 and
+    1 <= int(p[2]) and
+    int(p[2]) <= 31
+  ):
+    return t
+  return None
+
+def t_VALOR_URL(t):
+  r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/[\w\#\.\/\_\-]*)?)\"'
   return t
 
 def t_CLAVE(t):
-    r'(\"\w+\")'
-    t.type = reserved.get(t.value,'VALOR_STRING') # Check for reserved words
-    return t
+  r'\"\w+\"'
+   # Check for reserved words or cargo or estado
+  t.type = (reserved | cargos_estados_1).get(t.value,'VALOR_STRING')
+  return t
+
+def t_VALOR_STRING(t):
+  r'\".*\"'
+  t.type = cargos_estados_2.get(t.value,'VALOR_STRING') # Check for cargo or estado
+  return t
 
 def t_new_line(t):
   r'\n+'
