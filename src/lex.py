@@ -47,7 +47,6 @@ reserved = {
 }
 
 tokens = [
-  'NO_TOKEN',
   'APERTURA_OBJETO',
   'CLAUSURA_OBJETO',
   'APERTURA_LISTA',
@@ -75,8 +74,26 @@ t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
 
 def t_VALOR_REAL(t):
-  r'(\d+\.\d{1,2})'
-  return t
+  r'(\d+[\.\,]\d+)'
+  
+  error = ''
+  p = t.value.split(',')
+  if (1 < len(p)):
+    error = 'el separador decimal debe ser . (un punto)'
+  else:
+    p = t.value.split('.')
+    if (not (len(p[1]) == 2)):
+      error = 'los decimales deben ser 2'
+    else:
+      return t
+  
+  t.lexer.floats.append({
+    'value': t.value,
+    'type': t.type,
+    'lineno': t.lineno,
+    'lexpos': t.lexpos,
+    'error': error
+  })
 
 def t_VALOR_ENTERO(t):
   r'\d+'
@@ -84,17 +101,26 @@ def t_VALOR_ENTERO(t):
 
 def t_VALOR_FECHA(t):
   r'\"\d{4}\-\d{1,2}\-\d{1,2}\"'
+  
+  error = ''
   p = t.value[1:-1].split('-') # Avoid " and separate the pieces by -
-  if (
-    1900 <= int(p[0]) and
-    int(p[0]) <= 2099 and 
-    1 <= int(p[1]) and
-    int(p[1]) <= 12 and
-    1 <= int(p[2]) and
-    int(p[2]) <= 31
-  ):
+  
+  if (not (1900 <= int(p[0]) and int(p[0]) <= 2099)):
+    error = 'el año debe estar entre 1900 y 2099'
+  elif (not (1 <= int(p[1]) and int(p[1]) <= 12)):
+    error = 'el mes debe estar entre 1 y 12'
+  elif (not (1 <= int(p[2]) and int(p[2]) <= 31)):
+    error = 'el dia debe estar entre 1 y 31'
+  else:
     return t
-  return None
+  
+  t.lexer.dates.append({
+    'value': t.value,
+    'type': t.type,
+    'lineno': t.lineno,
+    'lexpos': t.lexpos,
+    'error': error
+  })
 
 def t_VALOR_URL(t):
   r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/[\w\#\.\/\_\-]*)?)\"'
@@ -114,70 +140,71 @@ def t_VALOR_STRING(t):
 def t_new_line(t):
   r'\n+'
   t.lexer.lineno += len(t.value)
-  
+
 t_ignore  = ' \t'
 
 def t_error(t):
+  t.lexer.errors.append({
+    'value': t.value[0],
+    'type': 'NO_TOKEN',
+    'lineno': t.lineno,
+    'lexpos': t.lexpos
+  })
   t.lexer.skip(1)
-  t.type = "NO_TOKEN"
-  return t
-  
+
 lexer = lex.lex()
 
 def lexer_module(data):
-  lexer.input(data)
+  lexer.floats = []
+  lexer.dates = []
+  lexer.errors = []
+  lexer.emty = not bool(len(data))
   tokens_response = []
-  is_no_token = False
-  no_token = {
-    'type': 'NO_TOKEN',
-    'value': '',
-    'lineno': 0,
-    'lexpos': 0
-  }
+  
+  lexer.input(data)
   while True:
     tok = lexer.token()
     if not tok:
-      if is_no_token:
-        tokens_response.append({
-          'type': no_token['type'],
-          'value': no_token['value'],
-          'lineno': no_token['lineno'],
-          'lexpos': no_token['lexpos']
-        }) # Add accumulated no_token
-      break      # No more input
-    if tok.type == 'NO_TOKEN':
-      if not is_no_token: # Initialize new no_token
-        is_no_token = True
-        no_token['lineno'] = tok.lineno
-        no_token['lexpos'] = tok.lexpos
-      no_token['value'] += tok.value[0] # Accumulate char no_token
-    else:
-      if is_no_token:
-        is_no_token = False
-        tokens_response.append({
-          'type': no_token['type'],
-          'value': no_token['value'],
-          'lineno': no_token['lineno'],
-          'lexpos': no_token['lexpos']
-        }) # Add accumulated no_token
-        no_token['value'] = ''
-      tokens_response.append({
-        'type': tok.type,
-        'value': tok.value,
-        'lineno': tok.lineno,
-        'lexpos': tok.lexpos
-      }) # Add new token
-  return tokens_response
+      break # No more input
+    tokens_response.append({
+      'value': tok.value,
+      'type': tok.type,
+      'lineno': tok.lineno,
+      'lexpos': tok.lexpos
+    }) # Add new token
+  return {
+    'tokens': tokens_response,
+    'errors': lexer.errors,
+    'floats': lexer.floats,
+    'dates': lexer.dates,
+    'emty': lexer.emty
+  }
 
 if __name__ == '__main__':
   print('Lexer de json interactivo')
   while True:
     string_input = input('>>> ')
     print()
-    tokens = lexer_module(string_input)
-    for token in tokens :
-      print(f"{token.get('value')} ➜  ", end="")
-      print(f"tipo: {token.get('type')} ,", end="")
-      print(f"linea: {token.get('lineno')} ,", end="")
-      print(f"posicion: {token.get('lexpos')}")
-    print()
+    tokens,errors,floats,dates,emty = lexer_module(string_input).values()
+    if (emty):
+      print('Error: imput vacio', end='\n\n')
+    if (len(errors) > 0):
+      print('Lexer Error (No_Tokens): los siguientes caracteres no se reconocen')
+      for error in errors:
+        print(f' {error.get('value')} ➜  error: caracter inlegal')
+      print()
+    if (len(floats) > 0):
+      print('Lexer Error (Floats): los siguientes numeros reales no cumplen las condiciones')
+      for fl in floats:
+        print(f' {fl.get('value')} ➜  error: {fl.get('error')}')
+      print()
+    if (len(dates) > 0):
+      print('Lexer Error (Dates): las siguientes fechas no cumplen las condiciones')
+      for date in dates:
+        print(f' {date.get('value')} ➜  error: {date.get('error')}')
+      print()
+    if (len(tokens) > 0):
+      print('Lexer (Tokens): los siguientes tokens fueron encontrados')
+      for token in tokens :
+        print(f" {token.get('value')} ➜  tipo: {token.get('type')}")
+      print()
