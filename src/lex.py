@@ -74,44 +74,67 @@ t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
 
 def t_VALOR_REAL(t):
-  r'(\d+[\.\,]\d+)'
+  r'(\-?\d+[\.\,]\d+)'
   
-  error = ''
-  p = t.value.split(',')
-  if (1 < len(p)):
-    error = 'el separador decimal debe ser . (un punto)'
+  errors = []
+  p = None
+  
+  if ('-' in t.value):
+    errors.append('el numero debe ser real positivo o cero')
+  if (',' in t.value):
+    errors.append('el separador decimal debe ser . (un punto)')
+    p = t.value.split(',')
   else:
     p = t.value.split('.')
-    if (not (len(p[1]) == 2)):
-      error = 'los decimales deben ser 2'
-    else:
-      return t
+  if (not (len(p[1]) == 2)):
+    errors.append('los decimales del numero deben ser 2')
+  if (not errors):
+    return t
   
-  t.lexer.floats.append({
+  t.lexer.numbers.append({
     'value': t.value,
     'type': t.type,
     'lineno': t.lineno,
     'lexpos': t.lexpos,
-    'error': error
+    'errors': errors
   })
 
 def t_VALOR_ENTERO(t):
-  r'\d+'
-  return t
+  r'\-?\d+'
+  
+  errors = []
+  if ('-' in t.value):
+    errors.append('el numero debe ser entero positivo o cero')
+  else:
+    return t
+  
+  t.lexer.numbers.append({
+    'value': t.value,
+    'type': t.type,
+    'lineno': t.lineno,
+    'lexpos': t.lexpos,
+    'errors': errors
+  })
 
 def t_VALOR_FECHA(t):
-  r'\"\d{4}\-\d{1,2}\-\d{1,2}\"'
+  r'\"\d+\-\d+\-\d+\"'
   
-  error = ''
+  errors = []
   p = t.value[1:-1].split('-') # Avoid " and separate the pieces by -
   
+  if (not len(p[0]) == 4):
+    errors.append('el año debe tener 4 digitos')
+  if (not len(p[1]) == 2):
+    errors.append('el mes debe tener 2 digitos')
+  if (not len(p[2]) == 2):
+    errors.append('el dia debe tener 2 digitos')
   if (not (1900 <= int(p[0]) and int(p[0]) <= 2099)):
-    error = 'el año debe estar entre 1900 y 2099'
-  elif (not (1 <= int(p[1]) and int(p[1]) <= 12)):
-    error = 'el mes debe estar entre 1 y 12'
-  elif (not (1 <= int(p[2]) and int(p[2]) <= 31)):
-    error = 'el dia debe estar entre 1 y 31'
-  else:
+    errors.append('el año debe estar entre 1900 y 2099')
+  if (not (1 <= int(p[1]) and int(p[1]) <= 12)):
+    errors.append('el mes debe estar entre 1 y 12')
+  if (not (1 <= int(p[2]) and int(p[2]) <= 31)):
+    errors.append('el dia debe estar entre 1 y 31')
+  if (not errors):
     return t
   
   t.lexer.dates.append({
@@ -119,7 +142,7 @@ def t_VALOR_FECHA(t):
     'type': t.type,
     'lineno': t.lineno,
     'lexpos': t.lexpos,
-    'error': error
+    'errors': errors
   })
 
 def t_VALOR_URL(t):
@@ -133,9 +156,22 @@ def t_CLAVE(t):
   return t
 
 def t_VALOR_STRING(t):
-  r'\".*\"'
-  t.type = cargos_estados_2.get(t.value,'VALOR_STRING') # Check for cargo or estado
-  return t
+  r'(\".*\")|(\'.*\')'
+  
+  errors = []
+  if ("'" in t.value):
+    errors.append('los strings deben estar entre " (comillas dobles)')
+  else:
+    t.type = cargos_estados_2.get(t.value,'VALOR_STRING') # Check for cargo or estado
+    return t
+  
+  t.lexer.strings.append({
+    'value': t.value,
+    'type': t.type,
+    'lineno': t.lineno,
+    'lexpos': t.lexpos,
+    'errors': errors
+  })
 
 def t_new_line(t):
   r'\n+'
@@ -155,10 +191,11 @@ def t_error(t):
 lexer = lex.lex()
 
 def lexer_module(data):
-  lexer.floats = []
+  lexer.numbers = []
   lexer.dates = []
+  lexer.strings = []
   lexer.errors = []
-  lexer.emty = not bool(len(data))
+  lexer.empty = not bool(len(data))
   tokens_response = []
   
   lexer.input(data)
@@ -175,9 +212,10 @@ def lexer_module(data):
   return {
     'tokens': tokens_response,
     'errors': lexer.errors,
-    'floats': lexer.floats,
+    'numbers': lexer.numbers,
     'dates': lexer.dates,
-    'emty': lexer.emty
+    'strings': lexer.strings,
+    'empty': lexer.empty
   }
 
 if __name__ == '__main__':
@@ -185,26 +223,37 @@ if __name__ == '__main__':
   while True:
     string_input = input('>>> ')
     print()
-    tokens,errors,floats,dates,emty = lexer_module(string_input).values()
-    if (emty):
+    tokens,errors,numbers,dates,strings,empty = lexer_module(string_input).values()
+    if (empty):
       print('Error: imput vacio', end='\n\n')
     if (len(errors) > 0):
       print('Lexer Error (No_Tokens): los siguientes caracteres no se reconocen')
       for error in errors:
-        print(f' {error.get('value')} ➜  error: caracter inlegal')
+        print(f'  ◢ {error.get('value')} ►  error: caracter inlegal')
       print()
-    if (len(floats) > 0):
-      print('Lexer Error (Floats): los siguientes numeros reales no cumplen las condiciones')
-      for fl in floats:
-        print(f' {fl.get('value')} ➜  error: {fl.get('error')}')
+    if (len(numbers) > 0):
+      print('Lexer Error (Numbers): los siguientes numeros no cumplen las condiciones')
+      for number in numbers:
+        print(f'  ◢ {number.get('value')}')
+        for error in number.get('errors'):
+          print(f'    ► error: {error}')
       print()
     if (len(dates) > 0):
       print('Lexer Error (Dates): las siguientes fechas no cumplen las condiciones')
       for date in dates:
-        print(f' {date.get('value')} ➜  error: {date.get('error')}')
+        print(f'  ◢ {date.get('value')}')
+        for error in date.get('errors'):
+          print(f'    ► error: {error}')
+      print()
+    if (len(strings) > 0):
+      print('Lexer Error (Strings): los siguientes strings no cumplen las condiciones')
+      for string in strings:
+        print(f'  ◢ {string.get('value')}')
+        for error in string.get('errors'):
+          print(f'    ► error: {error}')
       print()
     if (len(tokens) > 0):
       print('Lexer (Tokens): los siguientes tokens fueron encontrados')
       for token in tokens :
-        print(f" {token.get('value')} ➜  tipo: {token.get('type')}")
+        print(f"  ◢ {token.get('value')} ►  tipo: {token.get('type')}")
       print()
