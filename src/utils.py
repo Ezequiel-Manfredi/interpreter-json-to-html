@@ -52,8 +52,10 @@ class Result:
       p = value.split(',')
     else:
       p = value.split('.')
+    if (not (len(p[0]) >= 1)):
+      errors.append('la parte entera del numero debe ser de al menos 1 digito')
     if (not (len(p[1]) == 2)):
-      errors.append('los decimales del numero deben ser 2')
+      errors.append('la parte decimal del numero debe ser de 2 digitos')
     if (not errors):
       return True
     

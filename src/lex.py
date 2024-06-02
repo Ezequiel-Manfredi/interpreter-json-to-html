@@ -75,7 +75,7 @@ t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
 
 def t_VALOR_REAL(t):
-  r'(\-?\d+[\.\,]\d+)'
+  r'(\-?\d*[\.\,]\d*)'
   
   if (t.lexer.result.check_float(t.value,t.lineno,t.lexpos)):
     return t
@@ -143,13 +143,14 @@ if __name__ == '__main__':
     
     if (is_empty):
       print('Error: imput vacio', end='\n\n')
-    if (len(no_tokens) > 0):
-      print_tokens(no_tokens,True)
-    if (len(numbers) > 0):
-      print_errors('Numbers','los siguientes numeros',numbers)
-    if (len(dates) > 0):
-      print_errors('Dates','las siguientes fechas',dates)
-    if (len(strings) > 0):
-      print_errors('Strings','los siguientes strings',strings)
-    if (len(tokens) > 0):
-      print_tokens(tokens)
+    else:
+      if (len(no_tokens) > 0):
+        print_tokens(no_tokens,True)
+      if (len(numbers) > 0):
+        print_errors('Numbers','los siguientes numeros',numbers)
+      if (len(dates) > 0):
+        print_errors('Dates','las siguientes fechas',dates)
+      if (len(strings) > 0):
+        print_errors('Strings','los siguientes strings',strings)
+      if (len(tokens) > 0):
+        print_tokens(tokens)
