@@ -75,7 +75,7 @@ t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
 
 def t_VALOR_REAL(t):
-  r'(\-?\d*[\.\,]\d*)'
+  r'(\-?(\d*[\.\,]\d+)|\-?(\d+[\.\,]\d*))'
   
   if (t.lexer.result.check_float(t.value,t.lineno,t.lexpos)):
     return t
