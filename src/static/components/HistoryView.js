@@ -11,7 +11,7 @@ class HistoryView {
 
     let results = await this.fetchResult(stringToScan)
     let [input, output] = this.preprareStrings(stringToScan, results)
-    $inputElement.innerHTML = `>>>> ${input}<br/><br/>`
+    $inputElement.innerHTML = `>>> ${input}<br/><br/>`
     $outputElement.innerHTML = output
 
 
@@ -30,6 +30,74 @@ class HistoryView {
       .then(res => res.json())
   }
 
+  preprareStrings(stringToScan, results) {
+    const { tokens, no_tokens, numbers, dates, strings, is_empty } = results
+    let outputString = ''
+
+    if (is_empty) {
+      return [stringToScan, '<li>Error: imput vacio</li><br/>']
+    }
+    if (no_tokens.length > 0) {
+      outputString += `<li>${this.renderToken(no_tokens, true)}</li><br/>`
+    }
+    if (numbers.length > 0) {
+      outputString += `<li>${this.renderErrors('Numbers', 'los siguientes numeros', numbers)}</li><br/>`
+    }
+    if (dates.length > 0) {
+      outputString += `<li>${this.renderErrors('Dates', 'las siguientes fechas', dates)}</li><br/>`
+    }
+    if (strings.length > 0) {
+      outputString += `<li>${this.renderErrors('Strings', 'los siguientes strings', strings)}</li><br/>`
+    }
+    if (tokens.length > 0) {
+      outputString += `<li>${this.renderToken(tokens)}</li><br/>`
+    }
+
+    return [stringToScan, outputString]
+  }
+
+  renderErrors(type, msj, data) {
+    let description = `<p>Lexer Error (${type}): ${msj} no cumplen las condiciones</p>`
+    let elements = data.reduce((acc, element) => {
+      let subDescription = `<p>◢ ${element.value}</p>`
+      let errors = element.errors.reduce((acc, error) => acc + `<li>► error: ${error}</li>`, '')
+      return acc + `<li>${subDescription}<ul>${errors}</ul></li>`
+    }, '')
+
+    return `${description}<ul>${elements}</ul>`
+  }
+
+  renderToken(data, isNot) {
+    let description
+    if (isNot) {
+      description = `<p>Lexer Error (No_Tokens): los siguientes caracteres no se reconocen</p>`
+    } else {
+      description = `<p>Lexer (Tokens): los siguientes tokens fueron encontrados</p>`
+    }
+    let elements = data.reduce((acc, element) => {
+      // return acc + `▸ ${element.value} ➜  ${isNot ? 'error: caracter ilegal' : `tipo: ${element.type}`}<br/>`
+      return acc +
+        `<tr>
+          <th>${element.value}</th>
+          <th>${element.type}</th>
+        </tr>`
+    }, '')
+
+    return `${description}
+    <table>
+      <thead>
+        <tr>
+          <th>Lexema</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${elements}
+      </body>
+    </table>`
+  }
+
+  /*
   preprareStrings(stringToScan, results) {
     let isNoToken = false
     let inputString = ''
@@ -56,10 +124,13 @@ class HistoryView {
         ${token.value} ➜ tipo: ${token.type} , linea: ${token.lineno} , posicion: ${token.lexpos}<br/>
       </li>`
     })
-    inputString += `<span ${isNoToken ? 'class="error"' : ''}>${currentString.slice(0, currentString.length)}</span>`
+    inputString += `<span ${isNoToken ? 'class="error"' : ''}>
+      ${currentString.slice(0, currentString.length)}
+    </span>`
 
     return [inputString, outputString]
   }
+  */
 
   renderNewHistory(stringToScan) {
     this.createNewHistoryItem(stringToScan)

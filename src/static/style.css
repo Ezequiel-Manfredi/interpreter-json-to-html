@@ -37,6 +37,10 @@ li {
   list-style: none;
 }
 
+ul {
+  padding-left: 20px;
+}
+
 body {
   position: relative;
   background-color: var(--body-bg);
@@ -240,8 +244,24 @@ body {
 
       &>li.item {
         font-size: medium;
-        padding: 15px;
+        padding: 25px;
         border-bottom: 2px solid var(--section-shadow);
+
+        & table {
+          border: 2px solid var(--section-shadow);
+          margin-left: 20px;
+
+          & thead {
+            color: white;
+            background-color: var(--section-shadow);
+          }
+
+          & th {
+            border: 1px solid var(--section-shadow);
+            text-align: center;
+            padding: 5px 10px;
+          }
+        }
       }
     }
 
