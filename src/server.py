@@ -14,5 +14,5 @@ def parser_files():
 @app.post("/lexer")
 def lexer_strings():
   body = request.json
-  tokens = lexer_module(body.get('string'))
-  return tokens
+  results = lexer_module(body.get('string'))
+  return results
