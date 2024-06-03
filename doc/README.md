@@ -5,4 +5,3 @@
   - Índice
   - Conformación de grupos
   - Registro de actividades
-- Archivo `Gramatica.txt` es la Gramatica generadora del JSON
