@@ -75,7 +75,7 @@ t_VALOR_NULL = r'(null)'
 t_VALOR_BOOL = r'(true)|(false)'
 
 def t_VALOR_REAL(t):
-  r'(\-?(\d*[\.\,]\d+)|\-?(\d+[\.\,]\d*))'
+  r'(\-?(\d+[\.\,]\d+)|\-?(\d+[\.\,]\d+))'
   
   if (t.lexer.result.check_float(t.value,t.lineno,t.lexpos)):
     return t
@@ -103,7 +103,7 @@ def t_CLAVE(t):
   return t
 
 def t_VALOR_STRING(t):
-  r'(\".*\")|(\'.*\')'
+  r'(\"([^\"])*\")|(\'([^\'])*\')'
   
   if (t.lexer.result.check_string(t.value,t.lineno,t.lexpos)):
     t.type = cargos_estados_2.get(t.value,'VALOR_STRING') # Check for cargo or estado
