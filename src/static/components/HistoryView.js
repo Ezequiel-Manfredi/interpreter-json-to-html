@@ -93,7 +93,7 @@ class HistoryView {
       </thead>
       <tbody>
         ${elements}
-      </body>
+      </tbody>
     </table>`
   }
 
