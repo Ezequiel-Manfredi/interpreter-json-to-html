@@ -120,6 +120,7 @@ def t_error(t):
   t.lexer.skip(1)
 
 lexer = lex.lex()
+lexer.result = Result('')
 
 def lexer_module(data):
   lexer.result = Result(data)

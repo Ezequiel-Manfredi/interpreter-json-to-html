@@ -1,4 +1,5 @@
 from lex import lexer_module
+from yacc import parser_module
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -9,7 +10,9 @@ def home_interface():
 
 @app.post("/parser")
 def parser_files():
-  return
+  body = request.json
+  result = parser_module(body.get('content'))
+  return result
 
 @app.post("/lexer")
 def lexer_strings():
