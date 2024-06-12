@@ -11,8 +11,8 @@ def home_interface():
 @app.post("/parser")
 def parser_files():
   body = request.json
-  result = parser_module(body.get('content'))
-  return result
+  results = parser_module(body.get('content'))
+  return results
 
 @app.post("/lexer")
 def lexer_strings():
