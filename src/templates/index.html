@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/static/components/HistoryView.js"></script>
   <script src="/static/components/FileView.js"></script>
+  <script src="/static/components/InputView.js"></script>
+  <script src="/static/components/OutputView.js"></script>
   <script defer src="/static/main.js"></script>
   <link rel="stylesheet" href="/static/style.css">
   <title>Interpreter JSON to HTML</title>
@@ -23,18 +25,18 @@
   <main>
     <section id="input">
       <nav class="input-nav nav"></nav>
-      <section class="input-content"></section>
+      <button id="reset">Reiniciar</button>
+      <section class="input-content content"></section>
     </section>
-    <button id="submit">Enviar</button>
+    <button id="submit">Traducir</button>
     <section id="output">
       <nav class="output-nav nav"></nav>
-      <section class="output-content"></section>
+      <section class="output-content content"></section>
     </section>
-    <button id="download">Descargar</button>
   </main>
   <form id="console">
     <ul id="history"></ul>
-    <input placeholder="Lexer de json interactivo" type="text" autocomplete="off" autofocus name="string-to-scan">
+    <input spellcheck="false" placeholder="Lexer de json interactivo" type="text" autocomplete="off" autofocus name="string-to-scan">
   </form>
 </body>
 

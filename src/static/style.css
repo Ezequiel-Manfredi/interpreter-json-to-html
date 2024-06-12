@@ -14,6 +14,7 @@ html {
 }
 
 input,
+a,
 code,
 nav,
 button {
@@ -41,6 +42,14 @@ ul {
   padding-left: 20px;
 }
 
+a {
+  color: black;
+
+  &:active {
+    color: black;
+  }
+}
+
 body {
   position: relative;
   background-color: var(--body-bg);
@@ -49,6 +58,7 @@ body {
   width: 100vw;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
 
   form#form-file {
@@ -79,6 +89,7 @@ body {
       justify-content: center;
       text-align: center;
       flex-direction: column;
+      flex-wrap: wrap;
       border-radius: 10px;
 
       &>img {
@@ -103,8 +114,8 @@ body {
   main {
     display: flex;
     gap: 10px;
-    width: 100vw;
-    height: 70vh;
+    width: 98vw;
+    height: 68vh;
     position: relative;
     padding: 0 10px;
 
@@ -112,6 +123,7 @@ body {
       background-color: var(--section-bg);
       flex: 1;
       width: 100%;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -164,60 +176,78 @@ body {
         }
       }
 
-      &>.input-content {
+      &>button#reset {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: large;
+
+        &:hover {
+          cursor: pointer;
+          transform: scale(1.05);
+        }
+      }
+
+      &>.content {
         width: 95%;
+        height: 95%;
+        padding: 10px;
+        margin: 0;
+        overflow: auto;
 
         &>pre {
-          padding: 10px;
-          margin: 0;
+          padding: 0;
+          max-width: 100%;
+          height: 100%;
+          white-space: pre-wrap;
+          position: relative;
 
           code {
+            max-width: 100%;
             font-size: large;
+          }
+
+          a {
+            position: absolute;
+            bottom: 20px;
+            right: 0;
+            font-size: xx-large;
+
+            &:hover {
+              transform: scale(1.05);
+            }
           }
         }
       }
     }
 
-    section#input {}
-
-    &>button {
+    &>button#submit {
+      z-index: 990;
       display: none;
-      font-size: large;
+      font-size: x-large;
       padding: 10px;
       border-radius: 20px;
       background-color: var(--section-bg);
-      box-shadow: inset 0 0 10px 2px var(--section-shadow);
+      box-shadow: 5px 5px 10px 2px var(--section-shadow);
+      width: fit-content;
+      height: fit-content;
       position: absolute;
-
-      &#submit {
-        width: 110px;
-        height: 60px;
-        left: calc(50% - 55px);
-        top: calc(50% - 30px);
-      }
-
-      &#download {
-        width: 130px;
-        height: 60px;
-        left: calc(100vw - 160px);
-        top: calc(70vh - 35px);
-      }
+      top: 50%;
+      left: 75%;
+      transform: translate(-50%, -50%);
 
       &:hover {
         cursor: pointer;
-        transform: scale(1.1);
       }
 
       &:active {
-        transform: scale(1);
+        box-shadow: inset 5px 5px 10px 2px var(--section-shadow);
       }
 
       &.active {
         display: block;
       }
     }
-
-    section#output {}
   }
 
   form#console {
@@ -227,6 +257,7 @@ body {
     box-shadow: inset 5px 5px 30px -5px var(--section-shadow);
     max-height: 30vh;
     min-height: 30vh;
+    width: 95%;
     margin: 0 10px;
     display: flex;
     flex-direction: column;
