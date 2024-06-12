@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lex import tokens
-from utils import SYNTAX_ERROR_MESSAGES as SEM , SyntaxErrors
+from utils import SYNTAX_ERROR_MESSAGES as SEM , SyntaxErrors, tabs
 
 def p_json(p):
   'json : apertura_objeto contenido clausura_objeto'
@@ -95,22 +95,22 @@ def p_lista_empresas(p):
     
 def p_empresa_1(p):
   'empresa : nombre_empresa coma fundacion coma direccion coma ingresos_anuales coma pyme coma link coma departamentos'
-  p[0] = f'<div>{p[1]}{p[11]}{p[13]}</div>'
+  p[0] = f'<div>\n{p[1]}{p[11]}{p[13]}</div>\n'
 def p_empresa_2(p):
   'empresa : nombre_empresa coma fundacion coma ingresos_anuales coma pyme coma link coma departamentos'
-  p[0] = f'<div>{p[1]}{p[9]}{p[11]}</div>'
+  p[0] = f'<div>\n{p[1]}{p[9]}{p[11]}</div>\n'
 def p_empresa_3(p):
   'empresa : nombre_empresa coma fundacion coma direccion coma ingresos_anuales coma pyme coma departamentos'
-  p[0] = f'<div>{p[1]}{p[11]}</div>'
+  p[0] = f'<div>\n{p[1]}{p[11]}</div>\n'
 def p_empresa_4(p):
   'empresa : nombre_empresa coma fundacion coma ingresos_anuales coma pyme coma departamentos'
-  p[0] = f'<div>{p[1]}{p[9]}</div>'
+  p[0] = f'<div>\n{p[1]}{p[9]}</div>\n'
 
 # pares clave-valor y sus errores
 
 def p_nombre_empresa(p):
   'nombre_empresa : CLAVE_NOMBRE_EMPRESA dos_puntos VALOR_STRING'
-  p[0] = f'<h1>{p[3]}</h1>'
+  p[0] = f'{tabs(1)}<h1>{p[3]}</h1>\n'
 def p_nombre_empresa_error_valor_invalido(p):
   'nombre_empresa : CLAVE_NOMBRE_EMPRESA dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -158,7 +158,7 @@ def p_link(p):
        | CLAVE_LINK dos_puntos VALOR_URL
   '''
   if (p[3]):
-    p[0] = f'<a href="{p[3]}">{p[3]}</a>'
+    p[0] = f'{tabs(1)}<a href="{p[3]}">{p[3]}</a>\n'
 def p_link_error_valor_invalido(p):
   'link : CLAVE_LINK dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -263,7 +263,7 @@ def p_departamento_2(p):
 
 def p_nombre_departamento(p):
   'nombre_departamento : CLAVE_NOMBRE dos_puntos VALOR_STRING'
-  p[0] = f'<h2>{p[3]}</h2>'
+  p[0] = f'{tabs(1)}<h2>{p[3]}</h2>\n'
 def p_nombre_departamento_error(p):
   'nombre_departamento : CLAVE_NOMBRE dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -350,7 +350,7 @@ def p_subdepartamento_3(p):
 
 def p_nombre_subdepartamento(p):
   'nombre_subdepartamento : CLAVE_NOMBRE dos_puntos VALOR_STRING'
-  p[0] = f'<h3>{p[3]}</h3>'
+  p[0] = f'{tabs(1)}<h3>{p[3]}</h3>\n'
 def p_nombre_subdepartamento_error(p):
   'nombre_subdepartamento : CLAVE_NOMBRE dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -365,7 +365,7 @@ def p_empleados(p):
             | CLAVE_EMPLEADOS dos_puntos apertura_lista lista_empleados clausura_lista
   '''
   if (len(p) == 6):
-    p[0] = f'<ul>{p[4]}</ul>'
+    p[0] = f'{tabs(1)}<ul>\n{p[4]}{tabs(1)}</ul>\n'
 def p_empleados_error(p):
   'empleados : CLAVE_EMPLEADOS dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -384,13 +384,13 @@ def p_lista_empleados(p):
 
 def p_empleado_1(p):
   'empleado : nombre_empleado coma edad coma cargo coma salario coma activo coma fecha_contratacion coma proyectos'
-  p[0] = f'<li>{p[1]}</li>{p[13]}'
+  p[0] = f'{tabs(2)}<li>{p[1]}</li>\n{p[13]}'
 def p_empleado_2(p):
   'empleado : nombre_empleado coma cargo coma salario coma activo coma fecha_contratacion coma proyectos'
-  p[0] = f'<li>{p[1]}</li>{p[11]}'
+  p[0] = f'{tabs(2)}<li>{p[1]}</li>\n{p[11]}'
 def p_empleado_3(p):
   'empleado : nombre_empleado coma edad coma cargo coma salario coma activo coma fecha_contratacion'
-  p[0] = f'<li>{p[1]}</li>'
+  p[0] = f'{tabs(2)}<li>{p[1]}</li>\n'
 
 # pares clave-valor y sus errores
 
@@ -454,8 +454,12 @@ def p_proyectos(p):
             | CLAVE_PROYECTOS dos_puntos apertura_lista lista_proyectos clausura_lista
   '''
   if (len(p) == 6):
-    head = '<thead><tr><th>Nombre</th><th>Estado</th><th>Fecha de inicio</th><th>Fecha de fin</th></tr></thead>'
-    p[0] = f'<table>{head}<tbody>{p[4]}</tbody></table>'
+    hname = f'{tabs(5)}<th>Nombre</th>\n'
+    hstate = f'{tabs(5)}<th>Estado</th>\n'
+    hdate1 = f'{tabs(5)}<th>Fecha de inicio</th>\n'
+    hdate2 = f'{tabs(5)}<th>Fecha de fin</th>\n'
+    head = f'{tabs(3)}<thead>\n{tabs(4)}<tr>\n{hname}{hstate}{hdate1}{hdate2}{tabs(4)}</tr>\n{tabs(3)}</thead>\n'
+    p[0] = f'{tabs(2)}<table>\n{head}{tabs(3)}<tbody>\n{p[4]}{tabs(3)}</tbody>\n{tabs(2)}</table>\n'
 def p_proyectos_error(p):
   'proyectos : CLAVE_PROYECTOS dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -474,22 +478,22 @@ def p_lista_proyectos(p):
 
 def p_proyecto_1(p):
   'proyecto : nombre_proyecto coma estado coma fecha_inicio coma fecha_fin'
-  p[0] = f'<tr>{p[1]}{p[3]}{p[5]}{p[7]}</tr>'
+  p[0] = f'{tabs(4)}<tr>\n{p[1]}{p[3]}{p[5]}{p[7]}{tabs(4)}</tr>\n'
 def p_proyecto_2(p):
   'proyecto : nombre_proyecto coma estado coma fecha_inicio'
-  p[0] = f'<tr>{p[1]}{p[3]}{p[5]}<th></th></tr>'
+  p[0] = f'{tabs(4)}<tr>\n{p[1]}{p[3]}{p[5]}{tabs(5)}<th></th>\n{tabs(4)}</tr>\n'
 def p_proyecto_3(p):
   'proyecto : nombre_proyecto coma fecha_inicio coma fecha_fin'
-  p[0] = f'<tr>{p[1]}<th></th>{p[3]}{p[5]}</tr>'
+  p[0] = f'{tabs(4)}<tr>\n{p[1]}{tabs(5)}<th></th>\n{p[3]}{p[5]}{tabs(4)}</tr>\n'
 def p_proyecto_4(p):
   'proyecto : nombre_proyecto coma fecha_inicio'
-  p[0] = f'<tr>{p[1]}<th></th>{p[3]}<th></th></tr>'
+  p[0] = f'{tabs(4)}<tr>\n{p[1]}{tabs(5)}<th></th>\n{p[3]}{tabs(5)}<th></th>\n{tabs(4)}</tr>\n'
 
 # pares clave-valor y sus errores
 
 def p_nombre_proyecto(p):
   'nombre_proyecto : CLAVE_NOMBRE dos_puntos VALOR_STRING'
-  p[0] = f'<th>{p[3]}</th>'
+  p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_nombre_proyecto_error(p):
   'nombre_proyecto : CLAVE_NOMBRE dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -500,7 +504,7 @@ def p_estado(p):
   estado : CLAVE_ESTADO dos_puntos VALOR_NULL
          | CLAVE_ESTADO dos_puntos VALOR_ESTADO
   '''
-  p[0] = f'<th>{p[3]}</th>'
+  p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_estado_error(p):
   'estado : CLAVE_ESTADO dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -508,7 +512,7 @@ def p_estado_error(p):
 
 def p_fecha_inicio(p):
   'fecha_inicio : CLAVE_FECHA_INICIO dos_puntos VALOR_FECHA'
-  p[0] = f'<th>{p[3]}</th>'
+  p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_fecha_inicio_error(p):
   'fecha_inicio : CLAVE_FECHA_INICIO dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -519,7 +523,7 @@ def p_fecha_fin(p):
   fecha_fin : CLAVE_FECHA_FIN dos_puntos VALOR_NULL
             | CLAVE_FECHA_FIN dos_puntos VALOR_FECHA
   '''
-  p[0] = f'<th>{p[3]}</th>'
+  p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_fecha_fin_error(p):
   'fecha_fin : CLAVE_FECHA_FIN dos_puntos error'
   p.parser.error.add_error(SEM['VALOR_INVALIDO'])
@@ -645,4 +649,4 @@ if __name__ == '__main__':
     }
   '''
   result = parser_module(example)
-  print(result)
+  print(result['content'])

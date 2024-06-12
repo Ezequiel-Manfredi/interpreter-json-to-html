@@ -161,3 +161,9 @@ class SyntaxErrors:
       'pos': pos,
       'msj': msj
     })
+
+def tabs(level):
+  tabs = ''
+  for i in range(level):
+    tabs += '\t'
+  return tabs
