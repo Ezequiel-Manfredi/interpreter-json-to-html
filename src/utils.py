@@ -124,3 +124,40 @@ def print_tokens(data,is_not = False):
     else:
       print(f'tipo: {ele.get('type')}')
   print()
+
+SYNTAX_ERROR_MESSAGES = {
+  'OBJETO' : {
+    'APERTURA': 'Se esperaba { (apertura de objeto)',
+    'CLAUSURA': 'Se esperaba } (clausura de objeto)',
+    'COMA_EXTRA': 'El ultimo elemento del objeto no debe llevar , (coma)'
+  },
+  'LISTA': {
+    'APERTURA': 'Se esperaba [ (apertura de lista)',
+    'CLAUSURA': 'Se esperaba ] (clausura de lista)',
+    'COMA_EXTRA': 'El ultimo elemento de la lista no debe llevar , (coma)',
+    'VACIO': 'La lista esta vacia, proporcione un elemento'
+  },
+  'OBLIGATORIO' : {
+    'EMPRESAS': 'El elemento "empresas" es obligatorio',
+  },
+  'VALOR_INVALIDO' : 'Valor invalido para el campo',
+  'DOS_PUNTOS' : 'Se esperaba : (dos puntos) para separa la clave del valor',
+  'COMA' : 'Se esperaba , (coma) para separa los elementos',
+  'EOF' : 'Problemas en el final del archivo'
+}
+
+class SyntaxErrors:
+  def __init__(self):
+    self.errors = []
+  
+  def get_errors(self):
+    return self.errors
+  
+  def add_error(self,msj,value = None,line = None,pos = None,type = None):
+    self.errors.append({
+      'value': value,
+      'type': type,
+      'line': line,
+      'pos': pos,
+      'msj': msj
+    })
