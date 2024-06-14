@@ -19,3 +19,6 @@ def lexer_strings():
   body = request.json
   results = lexer_module(body.get('string'))
   return results
+
+if __name__ == "__main__":
+  app.run(host='0.0.0.0')
