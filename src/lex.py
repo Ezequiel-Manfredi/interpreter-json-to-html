@@ -138,20 +138,26 @@ def lexer_module(data):
 if __name__ == '__main__':
   print('Lexer de json interactivo')
   while True:
-    string_input = input('>>> ')
-    print()
-    tokens,no_tokens,numbers,dates,strings,is_empty = lexer_module(string_input).values()
-    
-    if (is_empty):
-      print('Error: imput vacio', end='\n\n')
+    try:
+      string_input = input('(escribe "fin" para terminar)>>> ')
+    except KeyboardInterrupt:
+      break
+    if (string_input.lower() == 'fin'):
+      break
     else:
-      if (len(no_tokens) > 0):
-        print_tokens(no_tokens,True)
-      if (len(numbers) > 0):
-        print_errors('Numbers','los siguientes numeros',numbers)
-      if (len(dates) > 0):
-        print_errors('Dates','las siguientes fechas',dates)
-      if (len(strings) > 0):
-        print_errors('Strings','los siguientes strings',strings)
-      if (len(tokens) > 0):
-        print_tokens(tokens)
+      print()
+      tokens,no_tokens,numbers,dates,strings,is_empty = lexer_module(string_input).values()
+      
+      if (is_empty):
+        print('Error: imput vacio', end='\n\n')
+      else:
+        if (len(no_tokens) > 0):
+          print_tokens(no_tokens,True)
+        if (len(numbers) > 0):
+          print_errors('Numbers','los siguientes numeros',numbers)
+        if (len(dates) > 0):
+          print_errors('Dates','las siguientes fechas',dates)
+        if (len(strings) > 0):
+          print_errors('Strings','los siguientes strings',strings)
+        if (len(tokens) > 0):
+          print_tokens(tokens)
