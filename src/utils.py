@@ -1,3 +1,6 @@
+import os
+import sys
+
 class Result:
   def __init__(self, len_input):
     self.tokens = []
@@ -169,3 +172,93 @@ def tabs(level):
   for i in range(level):
     tabs += '\t'
   return tabs
+
+class FilesHandler:
+  def __init__(self):
+    self.files = []
+    self.dir = os.path.dirname(__file__)
+  
+  def args_reader(self):
+    print()
+    if (len(sys.argv) > 1):
+      # Los argumentos después del nombre del script son las rutas
+      for i in range(1, len(sys.argv)):
+        current_path = sys.argv[i]
+        self.files_reader(current_path)
+        print()  # Separador entre cada ruta procesada
+    else:
+      print('No se proporcionaron rutas como argumentos al ejecutar el parser.')
+      print('Por favor, ingresa las rutas una por una (presiona Enter después de cada una):')
+      print('(escribe "parse" para terminar la carga de archivos)')
+      print('(escribe "." para analizar el directorio de ejecucion)')
+      print('(escribe ".." para analizar el directorio padre de ejecucion)')
+      print('(escribe ""(vacio) para analizar el directorio por defecto ../prueba)')
+      print('(se aceptan rutas a un archivo individual o directorio a analizar)')
+      print('(se aceptan rutas absolutas o relativas(desde el directorio de ejecucion))')
+      while True:
+        print()  # Separador entre cada ruta procesada
+        try:
+          ruta_usuario = input('Ruta: ')
+        except KeyboardInterrupt:
+          break
+        if (ruta_usuario.lower() == 'parse'):
+          break
+        if (len(ruta_usuario) == 0):
+          self.files_reader()
+        else:
+          self.files_reader(ruta_usuario)
+  
+  def files_reader(self,relative_path = '../prueba'):
+    os.chdir(self.dir)
+    try:
+      special_case = relative_path == '.' or relative_path == '..'
+      if (special_case):
+        os.chdir(relative_path)
+      else:
+        os.chdir(os.path.dirname(relative_path))
+      path = os.getcwd()
+      if (not special_case):
+        path = os.path.join(path,os.path.basename(relative_path))
+    except :
+      print(f'La ruta {relative_path} no existe o no se tiene permisos')
+      return None
+    print(f'Procesando ruta {path}')
+    if (os.path.isfile(path)):
+      # Es un archivo
+      if (path.endswith('.json')):
+        # Es un archivo JSON, cargo su contenido
+        self.files.append(self.get_file_content(path))
+      else:
+        print(f'El archivo {path} no es un archivo JSON')
+    elif (os.path.isdir(path)):
+      # Es un directorio, buscar archivos JSON en la primera capa
+      files = os.listdir(path)
+      files_json = [file for file in files if file.endswith('.json')]
+      if (files_json):
+        print(f'Archivos JSON encontrados en el directorio {path}:')
+        for file in files_json:
+          self.files.append(self.get_file_content(os.path.join(path, file)))
+      else:
+        print(f'No se encontraron archivos JSON en el directorio {path}')
+    else:
+      print(f'La ruta {path} no corresponde a un archivo ni a un directorio válido')
+  
+  def get_file_content(self,file_path):
+    with open(file_path, 'r') as f:
+      file_name = os.path.basename(file_path)
+      file_dir = os.path.dirname(file_path)
+      print(f'Obteniendo contenido del archivo {file_name}')
+      file_content = f.read()
+      return {
+        'path': file_dir,
+        'name': file_name,
+        'content': file_content
+      }
+  
+  def file_writer(self,path,name,content):
+    try:
+      with open(os.path.join(path,name + '.html'), 'w') as f:
+          f.write(content)
+      print(f'         Archivo {name + '.html'} se ha guardado exitosamente en {path}')
+    except IOError as e:
+      print(f'         Error al intentar guardar el archivo en {path}: {e}')

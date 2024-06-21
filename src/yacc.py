@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 from lex import tokens
-from utils import SYNTAX_ERROR_MESSAGES as SEM , SyntaxErrors, tabs
+from utils import SYNTAX_ERROR_MESSAGES as SEM , SyntaxErrors, tabs, FilesHandler
+import sys
 
 def p_json(p):
   'json : apertura_objeto contenido clausura_objeto'
@@ -713,38 +714,26 @@ def parser_module(data):
     return { 'ok': False, 'errors': errors }
 
 if __name__ == '__main__':
-  example = '''
-    {
-      "empresas": [{
-        "nombre_empresa": "PacoSRL",
-        "fundacion": 2005,
-        "direccion": null,
-        "ingresos_anuales": 200000.25,
-        "pyme": false,
-        "departamentos": [
-        {
-          "nombre": "Ventas",
-          "subdepartamentos": [{
-            "nombre": "Mc Donalds JUC",
-            "empleados": [{
-              "nombre": "Sideshow Mel",
-              "cargo": "Product Analyst",
-              "salario": 1250.65,
-              "activo": true,
-              "fecha_contratacion": "2023-09-10",
-              "proyectos": [{
-                "nombre": "Mc Flurry",
-                "fecha_inicio": "2022-01-10",
-                "fecha_fin": null
-              }]
-            }]
-          }]
-        }]
-      }]
-    }
-  '''
-  result = parser_module(example)
-  if (result['ok']):
-    print(result['content'])
+  files_handler = FilesHandler()
+  files_handler.args_reader()
+  
+  print()
+  if (len(files_handler.files) == 0):
+    print('No se han cargado archivos')
   else:
-    print(result['errors'])
+    print('Comenzando analisis de los archivos cargados')
+    for file in files_handler.files:
+      print()
+      print(f'  ◢ Analizando el archivo {file['name']}')
+      result = parser_module(file['content'])
+      if (result['ok']):
+        print('    ► No se encontraron errores y fue traducido correctamente:')
+        content_split = result['content'].split('\n')
+        for line in content_split:
+          print('         ',line)
+        name = file['name'].split('.')[0]
+        files_handler.file_writer(file['path'],name,result['content'])
+      else:
+        print('    ► Se encontraron errores:')
+        for error in result['errors']:
+          print(f'         Syntax Error: {error['msj']} ({error['line']},{error['pos']})')
