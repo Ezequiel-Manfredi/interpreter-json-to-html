@@ -137,10 +137,12 @@ SYNTAX_ERROR_MESSAGES = {
     'COMA_EXTRA': 'El ultimo elemento de la lista no debe llevar , (coma)',
     'VACIO': 'La lista esta vacia, proporcione un elemento'
   },
-  'OBLIGATORIO' : {
-    'EMPRESAS': 'El elemento "empresas" es obligatorio',
-  },
-  'VALOR_INVALIDO' : 'Valor invalido para el campo',
+  'OBLIGATORIO' : lambda e = 'no_elemento': 
+    f'El elemento "{e}" es obligatorio',
+  'VALOR_INVALIDO' : lambda e = 'no_elemento',t = 'no_type': 
+    f'Valor invalido para el campo {e}, se esperaba {t}',
+  'CARGOS': '"Marketing", "Developer", "Devops", "Product Analyst", "Project Manager", "UX designer", "DB admin"',
+  'ESTADOS': '"Canceled", "Done", "To do", "In progress", "On hold"',
   'DOS_PUNTOS' : 'Se esperaba : (dos puntos) para separa la clave del valor',
   'COMA' : 'Se esperaba , (coma) para separa los elementos',
   'EOF' : 'Problemas en el final del archivo'

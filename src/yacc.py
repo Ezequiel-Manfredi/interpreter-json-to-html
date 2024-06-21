@@ -6,7 +6,7 @@ def p_json(p):
   'json : apertura_objeto contenido clausura_objeto'
   p[0] = p[2]
 
-# producciones del contenido y error campo obligatorio empresas
+# producciones del contenido
 
 def p_contenido_1(p):
   '''
@@ -31,16 +31,6 @@ def p_contenido_3(p):
             | firma coma version coma empresas
   '''
   p[0] = p[5]
-def p_contenido_error_empresas_necesario(p):
-  '''
-  contenido : version coma firma
-            | firma coma version
-            | version
-            | firma
-            | vacio
-  '''
-  p.parser.error.add_error(SEM['OBLIGATORIO']['EMPRESAS'])
-  pass
 
 # produccion de version y error valor no valido
 
@@ -51,8 +41,8 @@ def p_version(p):
   '''
   pass
 def p_version_error_valor_invalido(p):
-  'version : CLAVE_VERSION dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'version : CLAVE_VERSION dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
   pass
 
 # produccion de firma y error valor no valido
@@ -64,8 +54,8 @@ def p_firma(p):
   '''
   pass
 def p_firma_error_valor_invalido(p):
-  'firma : CLAVE_FIRMA_DIGITAL dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'firma : CLAVE_FIRMA_DIGITAL dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
   pass
 
 # produccion de empresas y error de lista vacia
@@ -78,8 +68,12 @@ def p_empresas_error_vacio(p):
   p.parser.error.add_error(SEM['LISTA']['VACIO'])
   pass
 def p_empresas_error_valor_invalido(p):
-  'empresas : CLAVE_EMPRESAS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'empresas : CLAVE_EMPRESAS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una lista'))
+  pass
+def p_empresas_error_obligatorio(p):
+  'empresas : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('empresas'))
   pass
 
 def p_lista_empresas(p):
@@ -90,6 +84,10 @@ def p_lista_empresas(p):
   p[0] = p[2]
   if (len(p) == 6):
     p[0] += p[5]
+def p_lista_empresas_error_coma_extra(p):
+  'lista_empresas : apertura_objeto empresa clausura_objeto coma'
+  p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
+  pass
 
 # atributos del objeto empresa
     
@@ -112,16 +110,24 @@ def p_nombre_empresa(p):
   'nombre_empresa : CLAVE_NOMBRE_EMPRESA dos_puntos VALOR_STRING'
   p[0] = f'{tabs(1)}<h1>{p[3]}</h1>\n'
 def p_nombre_empresa_error_valor_invalido(p):
-  'nombre_empresa : CLAVE_NOMBRE_EMPRESA dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'nombre_empresa : CLAVE_NOMBRE_EMPRESA dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_nombre_empresa_error_obligatorio(p):
+  'nombre_empresa : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre_empresa'))
   pass
 
 def p_fundacion(p):
   'fundacion : CLAVE_FUNDACION dos_puntos VALOR_ENTERO'
   pass
 def p_fundacion_error_valor_invalido(p):
-  'fundacion : CLAVE_FUNDACION dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'fundacion : CLAVE_FUNDACION dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un numero entero positivo'))
+  pass
+def p_fundacion_error_obligatorio(p):
+  'fundacion : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fundacion'))
   pass
 
 def p_direccion(p):
@@ -132,24 +138,32 @@ def p_direccion(p):
   '''
   pass
 def p_direccion_error_valor_invalido(p):
-  'direccion : CLAVE_DIRECCION dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'direccion : CLAVE_DIRECCION dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un objeto o null'))
   pass
 
 def p_ingresos_anuales(p):
   'ingresos_anuales : CLAVE_INGRESOS_ANUALES dos_puntos VALOR_REAL'
   pass
 def p_ingresos_anuales_error_valor_invalido(p):
-  'ingresos_anuales : CLAVE_INGRESOS_ANUALES dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'ingresos_anuales : CLAVE_INGRESOS_ANUALES dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un numero real positivo'))
+  pass
+def p_ingresos_anuales_error_obligatorio(p):
+  'ingresos_anuales : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('ingresos_anuales'))
   pass
 
 def p_pyme(p):
   'pyme : CLAVE_PYME dos_puntos VALOR_BOOL'
   pass
 def p_pyme_error_valor_invalido(p):
-  'pyme : CLAVE_PYME dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'pyme : CLAVE_PYME dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'true o false'))
+  pass
+def p_pyme_error_obligatorio(p):
+  'pyme : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('pyme'))
   pass
 
 def p_link(p):
@@ -160,8 +174,8 @@ def p_link(p):
   if (p[3]):
     p[0] = f'{tabs(1)}<a href="{p[3]}">{p[3]}</a>\n'
 def p_link_error_valor_invalido(p):
-  'link : CLAVE_LINK dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'link : CLAVE_LINK dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un enlace o null'))
   pass
 
 # produccion de departamentos y error de lista vacia
@@ -174,8 +188,12 @@ def p_departamentos_error_vacio(p):
   p.parser.error.add_error(SEM['LISTA']['VACIO'])
   pass
 def p_departamentos_error_valor_invalido(p):
-  'departamentos : CLAVE_DEPARTAMENTOS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'departamentos : CLAVE_DEPARTAMENTOS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una lista'))
+  pass
+def p_departamentos_error_obligatorio(p):
+  'departamentos : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('departamentos'))
   pass
 
 # atributos del objeto direccion
@@ -197,24 +215,36 @@ def p_calle(p):
   'calle : CLAVE_CALLE dos_puntos VALOR_STRING'
   pass
 def p_calle_error_valor_invalido(p):
-  'calle : CLAVE_CALLE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'calle : CLAVE_CALLE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_calle_error_obligatorio(p):
+  'calle : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('calle'))
   pass
 
 def p_ciudad(p):
   'ciudad : CLAVE_CIUDAD dos_puntos VALOR_STRING'
   pass
 def p_ciudad_error_valor_invalido(p):
-  'ciudad : CLAVE_CIUDAD dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'ciudad : CLAVE_CIUDAD dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_ciudad_error_obligatorio(p):
+  'ciudad : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('ciudad'))
   pass
 
 def p_pais(p):
   'pais : CLAVE_PAIS dos_puntos VALOR_STRING'
   pass
 def p_pais_error_valor_invalido(p):
-  'pais : CLAVE_PAIS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'pais : CLAVE_PAIS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_pais_error_obligatorio(p):
+  'pais : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('pais'))
   pass
 
 def p_lista_departamentos(p):
@@ -225,6 +255,10 @@ def p_lista_departamentos(p):
   p[0] = p[2]
   if (len(p) == 6):
     p[0] += p[5]
+def p_lista_departamentos_error_coma_extra(p):
+  'lista_departamentos : apertura_objeto departamento clausura_objeto coma'
+  p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
+  pass
 
 # atributos del objeto departamento
 
@@ -265,8 +299,12 @@ def p_nombre_departamento(p):
   'nombre_departamento : CLAVE_NOMBRE dos_puntos VALOR_STRING'
   p[0] = f'{tabs(1)}<h2>{p[3]}</h2>\n'
 def p_nombre_departamento_error(p):
-  'nombre_departamento : CLAVE_NOMBRE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'nombre_departamento : CLAVE_NOMBRE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_nombre_departamento_error_obligatorio(p):
+  'nombre_departamento : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
   pass
 
 def p_jefe(p):
@@ -276,8 +314,8 @@ def p_jefe(p):
   '''
   pass
 def p_jefe_error(p):
-  'jefe : CLAVE_JEFE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'jefe : CLAVE_JEFE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string o null'))
   pass
 
 # produccion de subdepartamentos y error de vacio
@@ -290,8 +328,12 @@ def p_subdepartamentos_error_vacio(p):
   p.parser.error.add_error(SEM['LISTA']['VACIO'])
   pass
 def p_subdepartamentos_error(p):
-  'subdepartamentos : CLAVE_SUBDEPARTAMENTOS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'subdepartamentos : CLAVE_SUBDEPARTAMENTOS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una lista'))
+  pass
+def p_subdepartamentos_error_obligatorio(p):
+  'subdepartamentos : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('subdepartamentos'))
   pass
 
 def p_lista_subdepartamentos(p):
@@ -302,6 +344,10 @@ def p_lista_subdepartamentos(p):
   p[0] = p[2]
   if (len(p) == 6):
     p[0] += p[5]
+def p_lista_subdepartamentos_error_coma_extra(p):
+  'lista_subdepartamentos : apertura_objeto subdepartamento clausura_objeto coma'
+  p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
+  pass
 
 # atributos del objeto subdepartamento
 
@@ -352,8 +398,12 @@ def p_nombre_subdepartamento(p):
   'nombre_subdepartamento : CLAVE_NOMBRE dos_puntos VALOR_STRING'
   p[0] = f'{tabs(1)}<h3>{p[3]}</h3>\n'
 def p_nombre_subdepartamento_error(p):
-  'nombre_subdepartamento : CLAVE_NOMBRE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'nombre_subdepartamento : CLAVE_NOMBRE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_nombre_subdepartamento_error_obligatorio(p):
+  'nombre_subdepartamento : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
   pass
 
 # produccion de empleados
@@ -367,8 +417,8 @@ def p_empleados(p):
   if (len(p) == 6):
     p[0] = f'{tabs(1)}<ul>\n{p[4]}{tabs(1)}</ul>\n'
 def p_empleados_error(p):
-  'empleados : CLAVE_EMPLEADOS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'empleados : CLAVE_EMPLEADOS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una lista o null'))
   pass
 
 def p_lista_empleados(p):
@@ -379,6 +429,10 @@ def p_lista_empleados(p):
   p[0] = p[2]
   if (len(p) == 6):
     p[0] += p[5]
+def p_lista_empleados_error_coma_extra(p):
+  'lista_empleados : apertura_objeto empleado clausura_objeto coma'
+  p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
+  pass
 
 # atributos del objeto empleado
 
@@ -398,8 +452,12 @@ def p_nombre_empleado(p):
   'nombre_empleado : CLAVE_NOMBRE dos_puntos VALOR_STRING'
   p[0] = p[3]
 def p_nombre_empleado_error(p):
-  'nombre_empleado : CLAVE_NOMBRE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'nombre_empleado : CLAVE_NOMBRE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_nombre_empleado_error_obligatorio(p):
+  'nombre_empleado : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
   pass
 
 def p_edad(p):
@@ -409,40 +467,56 @@ def p_edad(p):
   '''
   pass
 def p_edad_error(p):
-  'edad : CLAVE_EDAD dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'edad : CLAVE_EDAD dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un numero entero positivo o null'))
   pass
 
 def p_cargo(p):
   'cargo : CLAVE_CARGO dos_puntos VALOR_CARGO'
   pass
 def p_cargo_error(p):
-  'cargo : CLAVE_CARGO dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'cargo : CLAVE_CARGO dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un cargo: '+SEM['CARGOS']))
+  pass
+def p_cargo_error_obligatorio(p):
+  'cargo : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('cargo'))
   pass
 
 def p_salario(p):
   'salario : CLAVE_SALARIO dos_puntos VALOR_REAL'
   pass
 def p_salario_error(p):
-  'salario : CLAVE_SALARIO dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'salario : CLAVE_SALARIO dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un numero real positivo'))
+  pass
+def p_salario_error_obligatorio(p):
+  'salario : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('salario'))
   pass
 
 def p_activo(p):
   'activo : CLAVE_ACTIVO dos_puntos VALOR_BOOL'
   pass
 def p_activo_error(p):
-  'activo : CLAVE_ACTIVO dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'activo : CLAVE_ACTIVO dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'true o false'))
+  pass
+def p_activo_error_obligatorio(p):
+  'activo : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('activo'))
   pass
 
 def p_fecha_contratacion(p):
   'fecha_contratacion : CLAVE_FECHA_CONTRATACION dos_puntos VALOR_FECHA'
   pass
 def p_fecha_contratacion_error(p):
-  'fecha_contratacion : CLAVE_FECHA_CONTRATACION dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'fecha_contratacion : CLAVE_FECHA_CONTRATACION dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una fecha YYYY-MM-DD'))
+  pass
+def p_fecha_contratacion_error_obligatorio(p):
+  'fecha_contratacion : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_contratacion'))
   pass
 
 # produccion de proyectos
@@ -461,8 +535,8 @@ def p_proyectos(p):
     head = f'{tabs(3)}<thead>\n{tabs(4)}<tr>\n{hname}{hstate}{hdate1}{hdate2}{tabs(4)}</tr>\n{tabs(3)}</thead>\n'
     p[0] = f'{tabs(2)}<table>\n{head}{tabs(3)}<tbody>\n{p[4]}{tabs(3)}</tbody>\n{tabs(2)}</table>\n'
 def p_proyectos_error(p):
-  'proyectos : CLAVE_PROYECTOS dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'proyectos : CLAVE_PROYECTOS dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1]),'una lista o null')
   pass
 
 def p_lista_proyectos(p):
@@ -473,6 +547,10 @@ def p_lista_proyectos(p):
   p[0] = p[2]
   if (len(p) == 6):
     p[0] += p[5]
+def p_lista_proyectos_error_coma_extra(p):
+  'lista_proyectos : apertura_objeto proyecto clausura_objeto coma'
+  p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
+  pass
 
 # atributos del objeto proyecto
 
@@ -495,8 +573,12 @@ def p_nombre_proyecto(p):
   'nombre_proyecto : CLAVE_NOMBRE dos_puntos VALOR_STRING'
   p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_nombre_proyecto_error(p):
-  'nombre_proyecto : CLAVE_NOMBRE dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'nombre_proyecto : CLAVE_NOMBRE dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'un string'))
+  pass
+def p_nombre_proyecto_error_obligatorio(p):
+  'nombre_proyecto : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
   pass
 
 def p_estado(p):
@@ -506,16 +588,20 @@ def p_estado(p):
   '''
   p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_estado_error(p):
-  'estado : CLAVE_ESTADO dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'estado : CLAVE_ESTADO dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'null o un estado: '+SEM['ESTADOS']))
   pass
 
 def p_fecha_inicio(p):
   'fecha_inicio : CLAVE_FECHA_INICIO dos_puntos VALOR_FECHA'
   p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_fecha_inicio_error(p):
-  'fecha_inicio : CLAVE_FECHA_INICIO dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'fecha_inicio : CLAVE_FECHA_INICIO dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una fecha YYYY-MM-DD'))
+  pass
+def p_fecha_inicio_error_obligatorio(p):
+  'fecha_inicio : vacio'
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_inicio'))
   pass
 
 def p_fecha_fin(p):
@@ -525,8 +611,8 @@ def p_fecha_fin(p):
   '''
   p[0] = f'{tabs(5)}<th>{p[3]}</th>\n'
 def p_fecha_fin_error(p):
-  'fecha_fin : CLAVE_FECHA_FIN dos_puntos error'
-  p.parser.error.add_error(SEM['VALOR_INVALIDO'])
+  'fecha_fin : CLAVE_FECHA_FIN dos_puntos vacio'
+  p.parser.error.add_error(SEM['VALOR_INVALIDO'](p[1],'una fecha o null'))
   pass
 
 # producciones de apertura y clausura de objeto y sus errores
@@ -546,8 +632,8 @@ def p_clausura_objeto_error_vacio(p):
   'clausura_objeto : vacio'
   p.parser.error.add_error(SEM['OBJETO']['CLAUSURA'])
   pass
-def p_clausura_objeto_error(p):
-  'clausura_objeto : error CLAUSURA_OBJETO'
+def p_clausura_objeto_error_coma_extra(p):
+  'clausura_objeto : COMA CLAUSURA_OBJETO'
   p.parser.error.add_error(SEM['OBJETO']['COMA_EXTRA'])
   pass
 
@@ -569,7 +655,7 @@ def p_clausura_lista_error_vacio(p):
   p.parser.error.add_error(SEM['LISTA']['CLAUSURA'])
   pass
 def p_clausura_lista_error(p):
-  'clausura_lista : error CLAUSURA_LISTA'
+  'clausura_lista : COMA CLAUSURA_LISTA'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
   pass
 
@@ -592,6 +678,10 @@ def p_coma_error_vacio(p):
   'coma : vacio'
   p.parser.error.add_error(SEM['COMA'])
   pass
+def p_coma_error_multiple(p):
+  'coma : COMA coma'
+  p.parser.error.add_error('se esperaba un elemento clave-valor')
+  pass
 
 # produccion vacia
 
@@ -602,7 +692,12 @@ def p_vacio(p):
 def p_error(p):
   print(p)
   if p:
-    return p
+    while True:
+        tok = parser.token()             # Get the next token
+        if not tok or tok.type == 'COMA': 
+            break
+    parser.errok()
+    return tok
   else:
     parser.error.add_error(SEM['EOF'])
 
@@ -649,4 +744,7 @@ if __name__ == '__main__':
     }
   '''
   result = parser_module(example)
-  print(result['content'])
+  if (result['ok']):
+    print(result['content'])
+  else:
+    print(result['errors'])
