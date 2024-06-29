@@ -72,7 +72,7 @@ class Result:
     else:
       return True
     
-    self.add_result(value,line,pos,'VALOR_ENTERO',True,errors)
+    self.add_result(value,line,pos,0,'VALOR_ENTERO',True,errors)
     return False
   
   def check_date(self,value,line,pos):
