@@ -3,18 +3,22 @@ class OutputView extends FileView {
     super($fileNav, $fileContent)
   }
 
-  createContent(content, i) {
-    let $pre = super.createContent(content, i)
-    let $download = document.createElement('a')
-    $download.classList.add('download')
+  createContent(_, i) {
     let fileInfo = this.filesInfo[i]
+    console.log(fileInfo)
+    let $pre = super.createContent(fileInfo.content, i)
 
-    let file = new Blob([fileInfo.raw], { type: "text/html" })
-    let url = URL.createObjectURL(file)
-    $download.href = url
-    $download.setAttribute('download', fileInfo.name)
-    $download.innerHTML = 'Descargar'
+    if (fileInfo.content !== fileInfo.raw) {
+      let $download = document.createElement('a')
+      $download.classList.add('download')
 
-    $pre.append($download)
+      let file = new Blob([fileInfo.raw], { type: "text/html" })
+      let url = URL.createObjectURL(file)
+      $download.href = url
+      $download.setAttribute('download', fileInfo.name)
+      $download.innerHTML = 'Descargar'
+
+      $pre.append($download)
+    }
   }
 }

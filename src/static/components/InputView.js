@@ -12,22 +12,23 @@ class InputView extends FileView {
         body: JSON.stringify({ content: file.content })
       }).then(res => res.json())
         .then(output => {
-          let nameHtml = file.name.replace('json', 'html')
+          let name = file.name.replace('json', 'html')
+          let content = ''
+          let raw = ''
           if (output.ok) {
-            let stringTreatment = output.content
+            content = output.content
               .replace(/\</g, '&lt;').replace(/\>/g, '&gt;')
-
-            return {
-              name: nameHtml,
-              content: stringTreatment,
-              raw: output.content
-            }
+            raw = output.content
           } else {
-            return {
-              name: nameHtml,
-              content: output.errors,
-              raw: output.errors
-            }
+            content = output.errors.reduce((acc, err) => {
+              return `${acc}<p>${err.msj} (${err.line},${err.pos})</p>`
+            }, '')
+            raw = content
+          }
+          return {
+            name,
+            content,
+            raw
           }
         })
       )
