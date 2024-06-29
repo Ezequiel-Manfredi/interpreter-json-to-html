@@ -20,12 +20,12 @@ class Result:
       'is_empty': self.is_empty
     }
   
-  def add_result(self,value,line,pos,type = 'NO_TOKEN',is_error = False,errors = None):
+  def add_result(self,value,line,pos,last_pos,type = 'NO_TOKEN',is_error = False,errors = None):
     result = {
       'value': value,
       'type': type,
-      'line': line,
-      'pos': pos
+      'line': line + 1,
+      'pos': (pos - last_pos) + 1
     }
     
     if (not is_error):
@@ -147,7 +147,10 @@ SYNTAX_ERROR_MESSAGES = {
   'CARGOS': '"Marketing", "Developer", "Devops", "Product Analyst", "Project Manager", "UX designer", "DB admin"',
   'ESTADOS': '"Canceled", "Done", "To do", "In progress", "On hold"',
   'DOS_PUNTOS' : 'Se esperaba : (dos puntos) para separa la clave del valor',
-  'COMA' : 'Se esperaba , (coma) para separa los elementos',
+  'COMA' : {
+      'FALTA' : 'Se esperaba , (coma) para separa los elementos',
+      'MULTIPLE' : 'se esperaba un elemento clave-valor encontrado , (coma) multiple'
+    },
   'EOF' : 'Problemas en el final del archivo'
 }
 
@@ -158,12 +161,12 @@ class SyntaxErrors:
   def get_errors(self):
     return self.errors
   
-  def add_error(self,msj,value = None,line = None,pos = None,type = None):
+  def add_error(self,msj,line = 0,pos = 0,last_pos = 0,value = None,type = None):
     self.errors.append({
       'value': value,
       'type': type,
-      'line': line,
-      'pos': pos,
+      'line': line + 1,
+      'pos': (pos - last_pos) if (last_pos != 0) else pos,
       'msj': msj
     })
 
@@ -262,3 +265,5 @@ class FilesHandler:
       print(f'         Archivo {name + '.html'} se ha guardado exitosamente en {path}')
     except IOError as e:
       print(f'         Error al intentar guardar el archivo en {path}: {e}')
+
+RESYNC_TOK = ['COMA','CLAUSURA_OBJETO','CLAUSURA_LISTA']

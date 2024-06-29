@@ -112,15 +112,20 @@ def t_VALOR_STRING(t):
 def t_new_line(t):
   r'\n+'
   t.lexer.lineno += len(t.value)
+  t.lexer.last_pos = t.lexpos
 
 t_ignore  = ' \t'
 
 def t_error(t):
-  t.lexer.result.add_result(t.value[0],t.lineno,t.lexpos)
+  t.lexer.result.add_result(t.value[0],t.lineno,t.lexpos,t.lexer.last_pos)
   t.lexer.skip(1)
 
+def t_eof(t):
+  t.lexer.lineno = 0
+  t.lexer.last_pos = 0
 lexer = lex.lex()
 lexer.result = Result('')
+lexer.last_pos = 0
 
 def lexer_module(data):
   lexer.result = Result(data)
@@ -131,7 +136,7 @@ def lexer_module(data):
     if not tok:
       break # No more input
     
-    lexer.result.add_result(tok.value,tok.lineno,tok.lexpos,tok.type)
+    lexer.result.add_result(tok.value,tok.lineno,tok.lexpos,lexer.last_pos,tok.type)
     
   return lexer.result.results()
 
