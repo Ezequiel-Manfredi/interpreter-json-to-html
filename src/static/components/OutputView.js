@@ -5,8 +5,7 @@ class OutputView extends FileView {
 
   createContent(_, i) {
     let fileInfo = this.filesInfo[i]
-    console.log(fileInfo)
-    let $pre = super.createContent(fileInfo.content, i)
+    let $pre = super.createContent(fileInfo.content, i, fileInfo.isError)
 
     if (fileInfo.content !== fileInfo.raw) {
       let $download = document.createElement('a')

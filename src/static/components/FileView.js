@@ -17,13 +17,19 @@ class FileView {
     this.$fileNav.append($tab)
   }
 
-  createContent(content, i) {
+  createContent(content, i, isError = false) {
     let $pre = document.createElement("pre")
     if (i !== 0) $pre.classList.add("hidden")
     $pre.id = `t${i}`
     let $content = document.createElement("code")
-    $content.innerHTML = content
 
+    $content.innerHTML = (isError)
+      ? content
+      : content.split('\n').reduce((acc, line, i, arr) => {
+        let nbr = `${i + 1}`.padStart(`${arr.length}`.match(/\d/g).length, ' ')
+        return `${acc}<p><span class="line_nbr">${nbr} </span>${line}</p>`
+      }, '')
+    console.log($content.innerHTML)
     $pre.append($content)
     this.$fileContent.append($pre)
     return $pre

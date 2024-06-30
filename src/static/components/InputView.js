@@ -15,20 +15,24 @@ class InputView extends FileView {
           let name = file.name.replace('json', 'html')
           let content = ''
           let raw = ''
+          let isError = false
           if (output.ok) {
             content = output.content
-              .replace(/\</g, '&lt;').replace(/\>/g, '&gt;')
+              .replace(/\</g, '&lt;')
+              .replace(/\>/g, '&gt;')
             raw = output.content
           } else {
             content = output.errors.reduce((acc, err) => {
-              return `${acc}<p>${err.msj} (${err.line},${err.pos})</p>`
+              return `${acc}<p>${err.msj} (linea: ${err.line})</p>`
             }, '')
             raw = content
+            isError = true
           }
           return {
             name,
             content,
-            raw
+            raw,
+            isError
           }
         })
       )
