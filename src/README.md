@@ -22,4 +22,5 @@
 
 -   Compilacion del programa para generar el archivo.exe: `pip install pyinstaller`
     * Modulo lexer interactivo: `pyinstaller -D -F .\lex.py`
+    * Modulo parser de archivos: `pyinstaller -D -F .\yacc.py`
     * Modulo UI lexer parser integrados: `pyinstaller -D -F --add-data "templates;templates" --add-data "static;static" .\server.py`
