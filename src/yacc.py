@@ -892,7 +892,7 @@ def p_error(p):
   else:
     parser.error.add_error(SEM['EOF'])
 
-parser = yacc.yacc() #debug=False errorlog=yacc.NullLogger() start='empleado'
+parser = yacc.yacc(errorlog=yacc.NullLogger()) #debug=False errorlog=yacc.NullLogger() start='empleado'
 parser.last_tok = {}
 
 def parser_module(data):
@@ -928,3 +928,4 @@ if __name__ == '__main__':
         print('    ► Se encontraron errores:')
         for error in result['errors']:
           print(f'         Syntax Error: {error['msj']} (linea: {error['line']})')
+  input()

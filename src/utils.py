@@ -189,6 +189,7 @@ class FilesHandler:
   
   def args_reader(self):
     print()
+    print('programa ejecutado desde la ruta: ',self.dir)
     if (len(sys.argv) > 1):
       # Los argumentos después del nombre del script son las rutas
       for i in range(1, len(sys.argv)):
