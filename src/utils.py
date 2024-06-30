@@ -162,13 +162,19 @@ class SyntaxErrors:
     return self.errors
   
   def add_error(self,msj,line = 0,pos = 0,last_pos = 0,value = None,type = None):
-    self.errors.append({
-      'value': value,
-      'type': type,
-      'line': line,
-      'pos': (pos - last_pos) if (last_pos != 0) else pos,
-      'msj': msj
-    })
+    band = False
+    for err in self.errors:
+      if (msj == err['msj'] and line == err['line']):
+        band = True
+        break
+    if (not band):
+      self.errors.append({
+        'value': value,
+        'type': type,
+        'line': line,
+        'pos': (pos - last_pos) if (last_pos != 0) else pos,
+        'msj': msj
+      })
 
 def tabs(level):
   tabs = ''
