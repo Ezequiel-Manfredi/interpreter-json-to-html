@@ -88,7 +88,7 @@ def p_empresas_error_valor_invalido(p):
   pass
 def p_empresas_error_obligatorio(p):
   'empresas : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('empresas'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('empresas','json'),p.lineno(0))
   pass
 
 def p_lista_empresas(p):
@@ -134,7 +134,7 @@ def p_nombre_empresa_error_valor_invalido(p):
   pass
 def p_nombre_empresa_error_obligatorio(p):
   'nombre_empresa : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre_empresa'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre_empresa','empresa'),p.lineno(0))
   pass
 
 def p_fundacion(p):
@@ -150,7 +150,7 @@ def p_fundacion_error_valor_invalido(p):
   pass
 def p_fundacion_error_obligatorio(p):
   'fundacion : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('fundacion'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fundacion','empresa'),p.lineno(0))
   pass
 
 def p_direccion(p):
@@ -182,7 +182,7 @@ def p_ingresos_anuales_error_valor_invalido(p):
   pass
 def p_ingresos_anuales_error_obligatorio(p):
   'ingresos_anuales : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('ingresos_anuales'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('ingresos_anuales','empresa'),p.lineno(0))
   pass
 
 def p_pyme(p):
@@ -198,7 +198,7 @@ def p_pyme_error_valor_invalido(p):
   pass
 def p_pyme_error_obligatorio(p):
   'pyme : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('pyme'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('pyme','empresa'),p.lineno(0))
   pass
 
 def p_link(p):
@@ -207,7 +207,7 @@ def p_link(p):
        | CLAVE_LINK dos_puntos VALOR_URL
   '''
   if (p[3]):
-    p[0] = f'{tabs(1)}<a href="{p[3]}">{p[3]}</a>\n'
+    p[0] = f'{tabs(1)}<a href="{p[3]}">\n{tabs(2)}{p[3]}\n{tabs(1)}</a>\n'
 def p_link_error_valor_invalido(p):
   'link : CLAVE_LINK dos_puntos vacio'
   p.parser.error.add_error(
@@ -236,7 +236,7 @@ def p_departamentos_error_valor_invalido(p):
   pass
 def p_departamentos_error_obligatorio(p):
   'departamentos : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('departamentos'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('departamentos','empresa'),p.lineno(0))
   pass
 
 # atributos del objeto direccion
@@ -267,7 +267,7 @@ def p_calle_error_valor_invalido(p):
   pass
 def p_calle_error_obligatorio(p):
   'calle : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('calle'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('calle','direccion'),p.lineno(0))
   pass
 
 def p_ciudad(p):
@@ -279,7 +279,7 @@ def p_ciudad_error_valor_invalido(p):
   pass
 def p_ciudad_error_obligatorio(p):
   'ciudad : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('ciudad'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('ciudad','direccion'),p.lineno(0))
   pass
 
 def p_pais(p):
@@ -295,7 +295,7 @@ def p_pais_error_valor_invalido(p):
   pass
 def p_pais_error_obligatorio(p):
   'pais : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('pais'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('pais','direccion'),p.lineno(0))
   pass
 
 def p_lista_departamentos(p):
@@ -359,7 +359,7 @@ def p_nombre_departamento_error(p):
   pass
 def p_nombre_departamento_error_obligatorio(p):
   'nombre_departamento : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre','departamento'),p.lineno(0))
   pass
 
 def p_jefe(p):
@@ -396,7 +396,7 @@ def p_subdepartamentos_error(p):
   pass
 def p_subdepartamentos_error_obligatorio(p):
   'subdepartamentos : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('subdepartamentos'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('subdepartamentos','departamento'),p.lineno(0))
   pass
 
 def p_lista_subdepartamentos(p):
@@ -470,7 +470,7 @@ def p_nombre_subdepartamento_error(p):
   pass
 def p_nombre_subdepartamento_error_obligatorio(p):
   'nombre_subdepartamento : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre','subdepartamento'),p.lineno(0))
   pass
 
 # produccion de empleados
@@ -535,7 +535,7 @@ def p_nombre_empleado_error(p):
   pass
 def p_nombre_empleado_error_obligatorio(p):
   'nombre_empleado : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre','empleado'),p.lineno(0))
   pass
 
 def p_edad(p):
@@ -562,11 +562,7 @@ def p_cargo_error(p):
   pass
 def p_cargo_error_obligatorio(p):
   'cargo : vacio'
-  p.parser.error.add_error(
-    SEM['OBLIGATORIO']('cargo'),
-    p.parser.last_tok['line'],p.parser.last_tok['pos'],
-    p.parser.last_tok['last_pos']
-  )
+  p.parser.error.add_error(SEM['OBLIGATORIO']('cargo','empleado'),p.lineno(0))
   pass
 
 def p_salario(p):
@@ -582,7 +578,7 @@ def p_salario_error(p):
   pass
 def p_salario_error_obligatorio(p):
   'salario : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('salario'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('salario','empleado'),p.lineno(0))
   pass
 
 def p_activo(p):
@@ -598,7 +594,7 @@ def p_activo_error(p):
   pass
 def p_activo_error_obligatorio(p):
   'activo : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('activo'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('activo','empleado'),p.lineno(0))
   pass
 
 def p_fecha_contratacion(p):
@@ -614,7 +610,7 @@ def p_fecha_contratacion_error(p):
   pass
 def p_fecha_contratacion_error_obligatorio(p):
   'fecha_contratacion : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_contratacion'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_contratacion','empleado'),p.lineno(0))
   pass
 
 # produccion de proyectos
@@ -684,7 +680,7 @@ def p_nombre_proyecto_error(p):
   pass
 def p_nombre_proyecto_error_obligatorio(p):
   'nombre_proyecto : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('nombre','proyecto'),p.lineno(0))
   pass
 
 def p_estado(p):
@@ -715,7 +711,7 @@ def p_fecha_inicio_error(p):
   pass
 def p_fecha_inicio_error_obligatorio(p):
   'fecha_inicio : vacio'
-  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_inicio'))
+  p.parser.error.add_error(SEM['OBLIGATORIO']('fecha_inicio','proyecto'),p.lineno(0))
   pass
 
 def p_fecha_fin(p):
@@ -808,7 +804,6 @@ def p_vacio(p):
   pass
 
 def p_error(p):
-  print(p)
   if p:
     parser.last_tok = {
       "line": p.lineno,
@@ -859,4 +854,4 @@ if __name__ == '__main__':
       else:
         print('    ► Se encontraron errores:')
         for error in result['errors']:
-          print(f'         Syntax Error: {error['msj']} ({error['line']},{error['pos']})')
+          print(f'         Syntax Error: {error['msj']} (linea: {error['line']})')

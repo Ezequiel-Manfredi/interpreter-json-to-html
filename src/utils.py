@@ -24,7 +24,7 @@ class Result:
     result = {
       'value': value,
       'type': type,
-      'line': line + 1,
+      'line': line,
       'pos': (pos - last_pos) + 1
     }
     
@@ -140,8 +140,8 @@ SYNTAX_ERROR_MESSAGES = {
     'COMA_EXTRA': 'El ultimo elemento de la lista no debe llevar , (coma)',
     'VACIO': 'La lista esta vacia, proporcione un elemento'
   },
-  'OBLIGATORIO' : lambda e = 'no_elemento': 
-    f'El elemento "{e}" es obligatorio',
+  'OBLIGATORIO' : lambda e = 'no_elemento',o = 'no_object': 
+    f'El elemento "{e}" es obligatorio en el objeto {o}',
   'VALOR_INVALIDO' : lambda e = 'no_elemento',t = 'no_type': 
     f'Valor invalido para el campo {e}, se esperaba {t}',
   'CARGOS': '"Marketing", "Developer", "Devops", "Product Analyst", "Project Manager", "UX designer", "DB admin"',
@@ -165,7 +165,7 @@ class SyntaxErrors:
     self.errors.append({
       'value': value,
       'type': type,
-      'line': line + 1,
+      'line': line,
       'pos': (pos - last_pos) if (last_pos != 0) else pos,
       'msj': msj
     })

@@ -121,7 +121,7 @@ def t_error(t):
   t.lexer.skip(1)
 
 def t_eof(t):
-  t.lexer.lineno = 0
+  t.lexer.lineno = 1
   t.lexer.last_pos = 0
 lexer = lex.lex()
 lexer.result = Result('')
