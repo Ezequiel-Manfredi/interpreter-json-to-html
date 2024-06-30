@@ -93,7 +93,7 @@ def t_VALOR_FECHA(t):
     return t
 
 def t_VALOR_URL(t):
-  r'\"((https?\:\/\/)?(www\.)?\w+\.\w+(\:\d+)?(\/[\w\#\.\/\_\-]*)?)\"'
+  r'\"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)\"'
   return t
 
 def t_CLAVE(t):
