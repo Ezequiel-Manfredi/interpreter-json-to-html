@@ -62,7 +62,7 @@ class Result:
     if (not errors):
       return True
     
-    self.add_result(value,line,pos,'VALOR_REAL',True,errors)
+    self.add_result(value,line,pos,0,'VALOR_REAL',True,errors)
     return False
   
   def check_integer(self,value,line,pos):
@@ -94,7 +94,7 @@ class Result:
     if (not errors):
       return True
     
-    self.add_result(value,line,pos,'VALOR_FECHA',True,errors)
+    self.add_result(value,line,pos,0,'VALOR_FECHA',True,errors)
     return False
   
   def check_string(self,value,line,pos):
@@ -104,7 +104,7 @@ class Result:
     else:
       return True
     
-    self.add_result(value,line,pos,'VALOR_STRING',True,errors)
+    self.add_result(value,line,pos,0,'VALOR_STRING',True,errors)
     return False
 
 def print_errors(type,msj,data):
