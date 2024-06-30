@@ -4,7 +4,7 @@ from utils import SYNTAX_ERROR_MESSAGES as SEM , SyntaxErrors, tabs, FilesHandle
 
 def p_json(p):
   'json : apertura_objeto contenido clausura_objeto'
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
 
 # producciones del contenido
 
@@ -16,7 +16,7 @@ def p_contenido_1(p):
             | empresas coma firma
             | empresas
   '''
-  p[0] = p[1]
+  p[0] = f'{p[1]}'
 def p_contenido_2(p):
   '''
   contenido : version coma empresas coma firma
@@ -24,13 +24,13 @@ def p_contenido_2(p):
             | version coma empresas
             | firma coma empresas
   '''
-  p[0] = p[3]
+  p[0] = f'{p[3]}'
 def p_contenido_3(p):
   '''
   contenido : version coma firma coma empresas
             | firma coma version coma empresas
   '''
-  p[0] = p[5]
+  p[0] = f'{p[5]}'
 
 # produccion de version y error valor no valido
 
@@ -70,7 +70,7 @@ def p_firma_error_valor_invalido(p):
 
 def p_empresas(p):
   'empresas : CLAVE_EMPRESAS dos_puntos apertura_lista lista_empresas clausura_lista'
-  p[0] = p[4]
+  p[0] = f'{p[4]}'
 def p_empresas_error_vacio(p):
   'empresas : CLAVE_EMPRESAS dos_puntos apertura_lista vacio clausura_lista'
   p.parser.error.add_error(
@@ -96,9 +96,9 @@ def p_lista_empresas(p):
   lista_empresas : apertura_objeto empresa clausura_objeto coma lista_empresas
                  | apertura_objeto empresa clausura_objeto
   '''
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
   if (len(p) == 6):
-    p[0] += p[5]
+    p[0] += f'{p[5]}'
 def p_lista_empresas_error_coma_extra(p):
   'lista_empresas : apertura_objeto empresa clausura_objeto coma'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
@@ -108,16 +108,16 @@ def p_lista_empresas_error_coma_extra(p):
     
 def p_empresa_1(p):
   'empresa : nombre_empresa coma fundacion coma direccion coma ingresos_anuales coma pyme coma link coma departamentos'
-  p[0] = f'<div>\n{p[1]}{p[11]}{p[13]}</div>\n'
+  p[0] = f'<div style="border:1px solid gray;padding:20px">\n{p[1]}{p[11]}{p[13]}</div>\n'
 def p_empresa_2(p):
   'empresa : nombre_empresa coma fundacion coma ingresos_anuales coma pyme coma link coma departamentos'
-  p[0] = f'<div>\n{p[1]}{p[9]}{p[11]}</div>\n'
+  p[0] = f'<div style="border:1px solid gray;padding:20px">\n{p[1]}{p[9]}{p[11]}</div>\n'
 def p_empresa_3(p):
   'empresa : nombre_empresa coma fundacion coma direccion coma ingresos_anuales coma pyme coma departamentos'
-  p[0] = f'<div>\n{p[1]}{p[11]}</div>\n'
+  p[0] = f'<div style="border:1px solid gray;padding:20px">\n{p[1]}{p[11]}</div>\n'
 def p_empresa_4(p):
   'empresa : nombre_empresa coma fundacion coma ingresos_anuales coma pyme coma departamentos'
-  p[0] = f'<div>\n{p[1]}{p[9]}</div>\n'
+  p[0] = f'<div style="border:1px solid gray;padding:20px">\n{p[1]}{p[9]}</div>\n'
 
 # pares clave-valor y sus errores
 
@@ -303,9 +303,9 @@ def p_lista_departamentos(p):
   lista_departamentos : apertura_objeto departamento clausura_objeto coma lista_departamentos
                       | apertura_objeto departamento clausura_objeto
   '''
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
   if (len(p) == 6):
-    p[0] += p[5]
+    p[0] += f'{p[5]}'
 def p_lista_departamentos_error_coma_extra(p):
   'lista_departamentos : apertura_objeto departamento clausura_objeto coma'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
@@ -321,13 +321,13 @@ def p_departamento_1(p):
                | nombre_departamento coma subdepartamentos
   '''
   if (not p[1]):
-    p[0] = p[3] + p[5]
+    p[0] = f'{p[3]}{p[5]}'
   else:
-    p[0] = p[1]
+    p[0] = f'{p[1]}'
     if (not p[3]):
-      p[0] += p[5]
+      p[0] += f'{p[5]}'
     else:
-      p[0] += p[3]
+      p[0] += f'{p[3]}'
 def p_departamento_2(p):
   '''
   departamento : subdepartamentos coma nombre_departamento coma jefe
@@ -336,13 +336,13 @@ def p_departamento_2(p):
                | subdepartamentos coma nombre_departamento
   '''
   if (not p[1]):
-    p[0] = p[5] + p[3]
+    p[0] = f'{p[5]}{p[3]}'
   else:
     if (not p[3]):
-      p[0] = p[5]
+      p[0] = f'{p[5]}'
     else:
-      p[0] = p[3]
-    p[0] += p[1]
+      p[0] = f'{p[3]}'
+    p[0] += f'{p[1]}'
 
 # pares clave-valor y sus errores
 
@@ -381,7 +381,7 @@ def p_jefe_error(p):
 
 def p_subdepartamentos(p):
   'subdepartamentos : CLAVE_SUBDEPARTAMENTOS dos_puntos apertura_lista lista_subdepartamentos clausura_lista'
-  p[0] = p[4]
+  p[0] = f'{p[4]}'
 def p_subdepartamentos_error_vacio(p):
   'subdepartamentos : CLAVE_SUBDEPARTAMENTOS dos_puntos apertura_lista vacio clausura_lista'
   p.parser.error.add_error(SEM['LISTA']['VACIO'])
@@ -404,9 +404,9 @@ def p_lista_subdepartamentos(p):
   lista_subdepartamentos : apertura_objeto subdepartamento clausura_objeto coma lista_subdepartamentos
                          | apertura_objeto subdepartamento clausura_objeto
   '''
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
   if (len(p) == 6):
-    p[0] += p[5]
+    p[0] += f'{p[5]}'
 def p_lista_subdepartamentos_error_coma_extra(p):
   'lista_subdepartamentos : apertura_objeto subdepartamento clausura_objeto coma'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
@@ -422,13 +422,13 @@ def p_subdepartamento_1(p):
                   | nombre_subdepartamento coma empleados
   '''
   if (not p[1]):
-    p[0] = p[3] + p[5]
+    p[0] = f'{p[3]}{p[5]}'
   else:
-    p[0] = p[1]
-    if (not p[3]):
-      p[0] += p[5]
+    p[0] = f'{p[1]}'
+    if (len(p) > 4):
+      p[0] += f'{p[5]}'
     else:
-      p[0] += p[3]
+      p[0] += p[3] if (p[3]) else ''
 def p_subdepartamento_2(p):
   '''
   subdepartamento : empleados coma nombre_subdepartamento coma jefe
@@ -437,13 +437,13 @@ def p_subdepartamento_2(p):
                   | empleados coma nombre_subdepartamento
   '''
   if (not p[1]):
-    p[0] = p[5] + p[3]
+    p[0] = f'{p[5]}{p[3]}'
   else:
     if (not p[3]):
-      p[0] = p[5]
+      p[0] = f'{p[5]}'
     else:
-      p[0] = p[3]
-    p[0] += p[1]
+      p[0] = f'{p[3]}'
+    p[0] += f'{p[1]}'
 def p_subdepartamento_3(p):
   '''
   subdepartamento : nombre_subdepartamento coma jefe
@@ -451,9 +451,9 @@ def p_subdepartamento_3(p):
                   | nombre_subdepartamento
   '''
   if (not p[1]):
-    p[0] = p[3]
+    p[0] = f'{p[3]}'
   else:
-    p[0] = p[1]
+    p[0] = f'{p[1]}'
 
 # pares clave-valor y sus errores
 
@@ -497,9 +497,9 @@ def p_lista_empleados(p):
   lista_empleados : apertura_objeto empleado clausura_objeto coma lista_empleados
                   | apertura_objeto empleado clausura_objeto
   '''
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
   if (len(p) == 6):
-    p[0] += p[5]
+    p[0] += f'{p[5]}'
 def p_lista_empleados_error_coma_extra(p):
   'lista_empleados : apertura_objeto empleado clausura_objeto coma'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
@@ -516,12 +516,15 @@ def p_empleado_2(p):
 def p_empleado_3(p):
   'empleado : nombre_empleado coma edad coma cargo coma salario coma activo coma fecha_contratacion'
   p[0] = f'{tabs(2)}<li>{p[1]}</li>\n'
+def p_empleado_4(p):
+  'empleado : nombre_empleado coma cargo coma salario coma activo coma fecha_contratacion'
+  p[0] = f'{tabs(2)}<li>{p[1]}</li>\n'
 
 # pares clave-valor y sus errores
 
 def p_nombre_empleado(p):
   'nombre_empleado : CLAVE_NOMBRE dos_puntos VALOR_STRING'
-  p[0] = p[3]
+  p[0] = f'{p[3]}'
 def p_nombre_empleado_error(p):
   'nombre_empleado : CLAVE_NOMBRE dos_puntos vacio'
   p.parser.error.add_error(
@@ -643,9 +646,9 @@ def p_lista_proyectos(p):
   lista_proyectos : apertura_objeto proyecto clausura_objeto coma lista_proyectos
                   | apertura_objeto proyecto clausura_objeto
   '''
-  p[0] = p[2]
+  p[0] = f'{p[2]}'
   if (len(p) == 6):
-    p[0] += p[5]
+    p[0] += f'{p[5]}'
 def p_lista_proyectos_error_coma_extra(p):
   'lista_proyectos : apertura_objeto proyecto clausura_objeto coma'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
@@ -769,7 +772,7 @@ def p_clausura_lista_error_vacio(p):
   'clausura_lista : vacio'
   p.parser.error.add_error(SEM['LISTA']['CLAUSURA'])
   pass
-def p_clausura_lista_error(p):
+def p_clausura_lista_error_coma_extra(p):
   'clausura_lista : COMA CLAUSURA_LISTA'
   p.parser.error.add_error(SEM['LISTA']['COMA_EXTRA'])
   pass
@@ -821,7 +824,7 @@ def p_error(p):
   else:
     parser.error.add_error(SEM['EOF'])
 
-parser = yacc.yacc(errorlog=yacc.NullLogger()) #debug=False errorlog=yacc.NullLogger()
+parser = yacc.yacc(errorlog=yacc.NullLogger()) #debug=False errorlog=yacc.NullLogger() start='empleado'
 parser.last_tok = {}
 
 def parser_module(data):
