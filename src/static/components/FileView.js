@@ -29,7 +29,6 @@ class FileView {
         let nbr = `${i + 1}`.padStart(`${arr.length}`.match(/\d/g).length, ' ')
         return `${acc}<p><span class="line_nbr">${nbr} </span>${line}</p>`
       }, '')
-    console.log($content.innerHTML)
     $pre.append($content)
     this.$fileContent.append($pre)
     return $pre
